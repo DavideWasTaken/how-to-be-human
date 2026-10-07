@@ -1,0 +1,5 @@
+pi/station.conf
+.claude/
+.DS_Store
+Thumbs.db
+node_modules/

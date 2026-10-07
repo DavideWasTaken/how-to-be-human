@@ -1,0 +1,8 @@
+# Copy this file to the boot partition of the SD card (the one you can open
+# from Windows or macOS) to choose which station this Raspberry Pi shows.
+# Write the station name on the first line that does not start with #.
+#
+# Included stations:
+#   it/pensare   it/chi-sono   it/amare
+#   en/think     en/who-am-i   en/love
+it/amare

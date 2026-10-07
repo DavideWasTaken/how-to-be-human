@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Be Human</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div class="screen" id="screen">
+    <header class="topbar" id="topbar">
+      <span class="topbar-title" id="title"></span>
+      <svg class="topbar-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </header>
+
+    <main class="thread" id="thread">
+      <div class="turn turn-user" id="user-turn">
+        <div class="bubble" id="question"></div>
+      </div>
+      <div class="turn turn-assistant">
+        <div class="answer" id="answer"></div>
+      </div>
+    </main>
+
+    <footer class="composer-area" id="composer-area">
+      <div class="composer">
+        <svg class="composer-plus" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <div class="composer-input" id="input"><span class="placeholder" id="placeholder"></span></div>
+        <div class="send" id="send" data-state="empty">
+          <svg class="icon-arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V5M5.5 9.5L10 5l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="icon-stop" viewBox="0 0 20 20" aria-hidden="true"><rect x="6.5" y="6.5" width="7" height="7" rx="1.2" fill="currentColor"/></svg>
+        </div>
+      </div>
+      <p class="footnote" id="footnote"></p>
+    </footer>
+  </div>
+
+  <div class="notice" id="notice" hidden></div>
+  <pre class="debug" id="debug" hidden></pre>
+
+  <script src="src/i18n.js"></script>
+  <script src="src/engine.js"></script>
+  <script src="config.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
