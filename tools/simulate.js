@@ -42,7 +42,7 @@ const station = sandbox.HTBH.merge({}, sandbox.HTBH.DEFAULTS,
 
 const log = [];
 const ui = {
-  render() {}, cursor() {}, setGenerating() {}, showQuestion() {}, setInput() {},
+  render() {}, keys() {}, backspace() {}, cursor() {}, setGenerating() {}, showQuestion() {}, setInput() {},
   pressSend() {}, fadeAnswer() {}, resetAnswer() {}, nudge() {},
   debug(info) { if (info) log.push(info.attempt); }
 };

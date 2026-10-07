@@ -49,13 +49,29 @@ sudo reboot
 
 Replace `it/amare` with the station this Pi should show. The script:
 
-1. installs `cage`, `chromium` and the Inter font
+1. installs `cage`, `chromium` and the fonts
 2. saves the station in `pi/station.conf`
 3. turns on automatic login on the console
-4. adds a few lines to `~/.bash_profile` that start the station on the first console, and restart it if it ever closes
+4. adds a few lines to `~/.profile` that start the station on the first console, and restart it if it ever closes
 5. hides boot messages and disables screen blanking (the original `cmdline.txt` is saved as `cmdline.txt.htbh-backup`)
 
-After the reboot the station starts by itself.
+After the reboot the station starts by itself. This is what happens every time the Pi is powered on:
+
+```
+power on → quiet boot → automatic login on tty1 → ~/.profile starts cage
+        → cage opens Chromium in kiosk mode, fullscreen → index.html?station=…
+```
+
+Chromium runs with no address bar, no tabs, no error dialogs and no "restore pages" prompt, and the mouse pointer is hidden. If Chromium ever closes or crashes, it is started again after two seconds. Sound is allowed to play without anyone touching the page.
+
+### Sound
+
+The keyboard clicks play on the Pi's default audio output. Choose it with `sudo raspi-config` → *System Options* → *Audio*:
+
+- **HDMI**: the sound goes to the monitor or to an HDMI-to-VGA adapter with an audio jack
+- **Headphones / AV jack** (Pi 4, Pi 3): small active speakers, or the red and white plugs of the composite AV cable straight into the television
+
+Set the volume with `alsamixer`, or with `sound.volume` in `config.js`. To switch the sound off: `sound: { enabled: false }`.
 
 ### Updating
 

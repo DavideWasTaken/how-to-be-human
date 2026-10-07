@@ -38,6 +38,7 @@
   };
 
   let performer = null;
+  let sound = null;
   let started = false;
   let minimal = false;
   let question = '';
@@ -73,7 +74,7 @@
     const station = HTBH.merge(
       {},
       HTBH.DEFAULTS,
-      { timing: CONFIG.timing, behaviour: CONFIG.behaviour, display: CONFIG.display },
+      { timing: CONFIG.timing, behaviour: CONFIG.behaviour, display: CONFIG.display, sound: CONFIG.sound },
       def
     );
     const d = station.display;
@@ -101,6 +102,11 @@
     el.footnote.hidden = !d.showFootnote || !text('footnote');
     question = station.question;
     el.question.textContent = question;
+
+    sound = new HTBH.KeySound({
+      enabled: station.sound.enabled && !params.has('mute'),
+      volume: station.sound.volume
+    });
 
     performer = new HTBH.Performer(station, ui, { speed });
     performer.run();
@@ -182,6 +188,15 @@
       clearTimeout(idleTimer);
       cursorHidden = state === 'hidden';
       el.answer.dataset.cursor = state;
+    },
+
+    /** Key clicks for text that just appeared, spread over `span` seconds. */
+    keys(text, span) {
+      if (sound) sound.typed(text, span);
+    },
+
+    backspace(count, span) {
+      if (sound) sound.erased(count, span);
     },
 
     setGenerating(on) {

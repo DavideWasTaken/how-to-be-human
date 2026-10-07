@@ -7,7 +7,9 @@ set -euo pipefail
 MARK_BEGIN="# >>> how-to-be-human >>>"
 MARK_END="# <<< how-to-be-human <<<"
 
-[ -f "$HOME/.bash_profile" ] && sed -i "/$MARK_BEGIN/,/$MARK_END/d" "$HOME/.bash_profile"
+for f in "$HOME/.profile" "$HOME/.bash_profile"; do
+  [ -f "$f" ] && sed -i "/$MARK_BEGIN/,/$MARK_END/d" "$f"
+done
 
 CMDLINE=/boot/firmware/cmdline.txt
 [ -f "$CMDLINE" ] || CMDLINE=/boot/cmdline.txt

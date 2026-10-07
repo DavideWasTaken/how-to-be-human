@@ -79,6 +79,15 @@ Chances are numbers from `0` (never) to `1` (always). Most of them grow as confi
 | `introTyping` | `true` | When the machine starts, the question is typed (into the input box in `chat`, in place in `minimal`), once |
 | `antiBurnIn` | `true` | Moves the whole layout by a few pixels every cycle, so static parts do not burn into a CRT |
 
+## `sound`
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` | A soft keyboard click for every character written, and a backspace for every character erased. Synthesised, no audio files |
+| `volume` | `0.35` | From `0` to `1` |
+
+Add `&mute` to the URL to silence it while previewing. Desktop browsers start the sound only after a click or a key press on the page; the Raspberry Pi kiosk plays it from the start.
+
 ## `config.js`
 
 ```js
@@ -87,7 +96,8 @@ window.HTBH_CONFIG = {
 
   timing: {},            // applied to every station
   behaviour: {},
-  display: {}
+  display: {},
+  sound: {}
 };
 ```
 

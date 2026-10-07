@@ -50,9 +50,13 @@ sudo raspi-config nonint do_boot_behaviour B2
 touch "$HOME/.hushlogin"
 
 say "4/5  Starting the kiosk on boot"
-PROFILE_FILE="$HOME/.bash_profile"
+# bash reads ~/.bash_profile instead of ~/.profile when it exists, so never create it
+PROFILE_FILE="$HOME/.profile"
+[ -f "$HOME/.bash_profile" ] && PROFILE_FILE="$HOME/.bash_profile"
 touch "$PROFILE_FILE"
-sed -i "/$MARK_BEGIN/,/$MARK_END/d" "$PROFILE_FILE"
+for f in "$HOME/.profile" "$HOME/.bash_profile"; do
+  [ -f "$f" ] && sed -i "/$MARK_BEGIN/,/$MARK_END/d" "$f"
+done
 cat >> "$PROFILE_FILE" <<EOF
 $MARK_BEGIN
 # Start How to Be Human fullscreen on the first console. Restarts if it ever closes.
