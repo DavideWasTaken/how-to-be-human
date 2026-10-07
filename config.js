@@ -13,5 +13,6 @@ window.HTBH_CONFIG = {
 
   timing: {},
   behaviour: {},
-  display: {}
+  display: {},     // e.g. { layout: 'minimal' }
+  sound: {}        // e.g. { volume: 0.2 } or { enabled: false }
 };

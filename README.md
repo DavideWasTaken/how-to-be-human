@@ -57,7 +57,11 @@ Some behaviour is written into each attempt (a pause here, delete three words th
 | **Long think** | the cursor stays still for 4–5 seconds |
 | **Retraction** | when kept text piles up, whole paragraphs are pulled back |
 
-Each station has around 50–60 hand-written attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can be cut short at a different point. Hours can go by without the screen showing the same thing twice.
+Each Italian station has 45–60 hand-written attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can be cut short at a different point. Hours can go by without the screen showing the same thing twice.
+
+### Sound
+
+A soft keyboard click accompanies the writing, and it always matches what is on screen: one press for every character that appears, a deeper one for the space bar, a fuller one for a new line, and a backspace for every character that disappears. When text streams in a chunk, the clicks are spread across it like fast typing; when the whole answer is erased at the end, you hear the key being held down. The sound is synthesised in the browser, with no audio files, and every press varies slightly. Turn it off or change the volume with `sound: { enabled, volume }`.
 
 ## Two looks
 
@@ -77,9 +81,17 @@ Each installation point (a *station*) is one question with its own set of attemp
 | `it/pensare` | Come faccio a pensare? | Italian |
 | `it/chi-sono` | Come faccio a capire chi sono? | Italian |
 | `it/amare` | Come faccio ad amare? | Italian |
+| `it/felice` | Come faccio a essere felice? | Italian |
+| `it/vero` | Come faccio a sapere cosa è vero? | Italian |
+| `it/paura` | Come faccio a non avere paura? | Italian |
+| `it/sognare` | Come faccio a sognare? | Italian |
 | `en/think` | How do I think? | English |
 | `en/who-am-i` | How do I know who I am? | English |
 | `en/love` | How do I love? | English |
+| `en/happy` | How do I become happy? | English |
+| `en/true` | How do I know what is true? | English |
+| `en/afraid` | How do I stop being afraid? | English |
+| `en/dream` | How do I dream? | English |
 
 ## Try it
 
@@ -97,6 +109,9 @@ then visit `http://localhost:8000/?station=it/amare`.
 | `&speed=4` | run four times faster, for previewing |
 | `&debug` | show which attempt is running and the current confidence |
 | `&layout=minimal` | try the other look without editing any file |
+| `&mute` | no keyboard sound |
+
+Browsers keep sound off until you click or press a key on the page; the Raspberry Pi kiosk plays it straight away.
 
 Hidden keys, for setup only: **N** or **→** starts a new cycle, **D** toggles the debug overlay.
 
@@ -107,13 +122,13 @@ Copy [`stations/_template.js`](stations/_template.js), change the question and w
 ```js
 HTBH.station({
   language: 'it',
-  question: 'Come faccio a non avere paura?',
+  question: 'Come faccio a perdonare?',
   attempts: {
     confident: [
-      "La paura è una reazione naturale che [pause]ci protegge dai pericoli. [long pause]Per gestirla puoi [erase 2 words][think]"
+      "Perdonare è un processo che richiede [pause]tempo e consapevolezza. [long pause]Per iniziare puoi [erase 2 words][think]"
     ],
     searching: [ /* … */ ],
-    fragile:   [ "Paura [think]" ]
+    fragile:   [ "Perdonare [think]" ]
   }
 });
 ```
@@ -149,7 +164,8 @@ config.js             default station + settings shared by all stations
 src/
   engine.js           the performer: typing, hesitating, erasing, confidence
   app.js              interface, station loading, hidden keys
-  style.css           the chat interface, sized for 4:3
+  sound.js            keyboard clicks, synthesised, in step with the text
+  style.css           both layouts, sized for 4:3
   i18n.js             interface text per language
 stations/
   it/ en/             one file per station
@@ -161,12 +177,6 @@ pi/
 tools/simulate.js     runs a station on a virtual clock and prints statistics
 docs/                 guides
 ```
-
-## Roadmap
-
-- [ ] Optional generative mode: a language model writes new attempts, the engine still controls rhythm and failure
-- [ ] More stations: *How do I know what is true?* · *How do I stop being afraid?* · *How do I become happy?*
-- [ ] Optional sound of a keyboard, very low
 
 ## Credits
 

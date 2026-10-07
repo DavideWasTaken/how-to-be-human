@@ -3,6 +3,8 @@
 # Write the station name on the first line that does not start with #.
 #
 # Included stations:
-#   it/pensare   it/chi-sono   it/amare
-#   en/think     en/who-am-i   en/love
+#   it/pensare   it/chi-sono   it/amare    it/felice
+#   it/vero      it/paura      it/sognare
+#   en/think     en/who-am-i   en/love     en/happy
+#   en/true      en/afraid     en/dream
 it/amare

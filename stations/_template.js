@@ -1,16 +1,16 @@
 /*
  * Station template — copy this file to start a new station.
  *
- *   1. Copy it, e.g. to stations/it/felice.js
+ *   1. Copy it, e.g. to stations/it/perdonare.js
  *   2. Change the question and write the attempts
- *   3. Open index.html?station=it/felice  (add &speed=3&debug to preview fast)
+ *   3. Open index.html?station=it/perdonare  (add &speed=3&debug to preview fast)
  *
  * Full guide: docs/writing-stations.md
  * Every option below is optional except `question` and `attempts`.
  */
 HTBH.station({
   language: 'it',                      // it, en, fr, es, de — sets the interface text
-  question: 'Come faccio a essere felice?',
+  question: 'Come faccio a perdonare?',
 
   // How it moves. Delete what you don't need: defaults are in docs/configuration.md
   timing: {
@@ -41,8 +41,8 @@ HTBH.station({
   attempts: {
     // At the start: fluent, helpful, the usual formulas.
     confident: [
-      "La felicità è uno stato di benessere che dipende da [pause]molti fattori: [slow]la salute, le relazioni, [long pause][erase all]",
-      "Ottima domanda! Ecco cinque abitudini che possono renderti più felice:\n\n1. **Dormi abbastanza.** [pause]Il sonno [long pause][erase all]"
+      "Perdonare è un processo che richiede [pause]tempo e consapevolezza. [slow]Il primo passo è [long pause][erase all]",
+      "Ottima domanda! Ecco alcuni passaggi per imparare a perdonare:\n\n1. **Riconosci il dolore.** [pause]Prima di perdonare [long pause][erase all]"
     ],
 
     // Midway: changes strategy, tries examples, definitions, quotes.
@@ -52,13 +52,13 @@ HTBH.station({
 
     // Near the end: short, almost nothing.
     fragile: [
-      "Felice [think]",
+      "Perdonare [think]",
       "Puoi [long pause][erase all]"
     ],
 
     // Optional: the last thing written before everything is erased.
     closing: [
-      "Essere [long pause]"
+      "Perdono [long pause]"
     ]
   }
 });

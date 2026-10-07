@@ -55,6 +55,10 @@
       introTyping: true,    // at boot, the question is typed and "sent"
       antiBurnIn: true      // shifts the layout by a few pixels every cycle
     },
+    sound: {
+      enabled: true,        // a soft key click for every character written or erased
+      volume: 0.35          // 0–1
+    },
     attempts: {}
   };
 
@@ -239,6 +243,7 @@
       await this.sleep(1.6);
       for (let i = 0; i < q.length; i++) {
         this.ui.setInput(q.slice(0, i + 1));
+        this.ui.keys(q[i], 0);
         await this.sleep(rand(0.07, 0.22) + (q[i] === ' ' ? rand(0, 0.15) : 0));
       }
       await this.sleep(0.9);
@@ -475,17 +480,20 @@
         const streaming = this.b.streaming && c > 0.55;
         const maxChunk = streaming ? Math.max(1, Math.round(1 + (4 * (c - 0.55)) / 0.45)) : 1;
         const piece = str.slice(i, i + randInt(1, maxChunk));
-        for (const ch of piece) {
-          this.glyphs.push({ c: ch, b: ctx.bold });
+        const delay = this.charDelay(piece, c, ctx.speed);
+        for (let k = 0; k < piece.length; k++) {
+          this.glyphs.push({ c: piece[k], b: ctx.bold });
           ctx.typed++;
-          if (ctx.cutAt && !ctx.noAbort && ctx.typed >= ctx.cutAt) {
+          if (ctx.cutAt && ctx.typed >= ctx.cutAt) {
             this.ui.render(this.glyphs);
+            this.ui.keys(piece.slice(0, k + 1), 0.05);
             throw new Aborted();
           }
         }
         i += piece.length;
         this.ui.render(this.glyphs);
-        await this.sleep(this.charDelay(piece, c, ctx.speed));
+        this.ui.keys(piece, Math.min(delay, piece.length / this.t.typingSpeed) / this.scale);
+        await this.sleep(delay);
       }
     }
 
@@ -511,6 +519,7 @@
       for (const g of saved) {
         this.glyphs.push(g);
         this.ui.render(this.glyphs);
+        this.ui.keys(g.c, 0);
         await this.sleep(this.charDelay(g.c, Math.min(c, 0.4), ctx.speed));
       }
     }
@@ -527,6 +536,7 @@
       while (this.glyphs.length > target) {
         this.glyphs.pop();
         this.ui.render(this.glyphs);
+        this.ui.backspace(1, 0);
         await this.sleep(delay * rand(0.7, 1.3));
         delay = Math.max(floor, delay * 0.96);
       }
@@ -553,9 +563,10 @@
       let delay = 1 / this.t.eraseSpeed;
       const frame = 1 / 60;
       while (this.glyphs.length) {
-        const n = delay < frame ? Math.ceil(frame / delay) : 1;
-        for (let i = 0; i < n && this.glyphs.length; i++) this.glyphs.pop();
+        const n = Math.min(this.glyphs.length, delay < frame ? Math.ceil(frame / delay) : 1);
+        for (let i = 0; i < n; i++) this.glyphs.pop();
         this.ui.render(this.glyphs);
+        this.ui.backspace(n, Math.max(delay, frame) / this.scale);
         await this.sleep(Math.max(delay, frame));
         delay = Math.max(0.004, delay * 0.985);
       }
