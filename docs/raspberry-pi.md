@@ -38,7 +38,7 @@ git clone https://github.com/DavideWasTaken/how-to-be-human.git
 cd how-to-be-human
 ```
 
-> While the repository is private, `git clone` asks for a GitHub username and a [personal access token](https://github.com/settings/tokens) instead of a password. Alternatively, copy the folder to the Pi with a USB stick or `scp -r how-to-be-human <username>@<pi-name>.local:~`.
+> No internet at the venue? Copy the folder to the Pi with a USB stick or `scp -r how-to-be-human <username>@<pi-name>.local:~` instead.
 
 ### 3. Install
 
