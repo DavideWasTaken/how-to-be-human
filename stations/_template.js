@@ -34,8 +34,8 @@ HTBH.station({
   },
 
   display: {
-    textSize: 1,                       // 1.2 = 20% bigger
-    cursor: 'dot'                      // 'dot', 'bar' or 'block'
+    layout: 'chat',                    // 'chat' (assistant interface) or 'minimal' (only the words, large)
+    textSize: 1                        // 1.2 = 20% bigger
   },
 
   attempts: {

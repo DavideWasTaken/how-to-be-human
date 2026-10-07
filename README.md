@@ -4,9 +4,11 @@
 
 **A machine that has an answer for everything meets a question it can't answer.**
 
-<img src="docs/images/screenshot.png" alt="A clean chat interface. The question “Come faccio ad amare?” sits in a grey bubble; below it the assistant has started an answer: “Ottima domanda! Amare è una delle esperienze più profonde e complesse della vita umana.”, followed by a black cursor dot." width="560">
+<img src="docs/images/chat.png" alt="A clean chat interface. The question “Come faccio ad amare?” sits in a grey bubble; below it the assistant has started an answer: “Ottima domanda! Amare è una delle esperienze più profonde e complesse della vita umana.”, followed by a black cursor dot." width="560">
 
 <sub>An installation for Raspberry Pi and 4:3 CRT monitors · no AI model involved · every word is written by hand</sub>
+
+**How to Be Human** is a project for [matteomandelli.com](https://matteomandelli.com)
 
 </div>
 
@@ -55,6 +57,17 @@ Some behaviour is written into each attempt (a pause here, delete three words th
 | **Long think** | the cursor stays still for 4–5 seconds |
 | **Retraction** | when kept text piles up, whole paragraphs are pulled back |
 
+Each station has around 50–60 hand-written attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can be cut short at a different point. Hours can go by without the screen showing the same thing twice.
+
+## Two looks
+
+| `layout: 'chat'` (default) | `layout: 'minimal'` |
+|---|---|
+| <img src="docs/images/chat.png" alt="Chat layout: header, grey question bubble, answer with a round cursor, input box at the bottom." width="380"> | <img src="docs/images/minimal.png" alt="Minimal layout: only the question and the answer in large serif type, with a thin bar cursor." width="380"> |
+| A familiar AI assistant: question bubble, input box, round cursor. Nothing branded | Only the words, large, in a serif face with a bar cursor. Made for small CRTs read from a distance |
+
+Switch with one line in `config.js` or in a station: `display: { layout: 'minimal' }`. To compare, add `&layout=minimal` to the URL.
+
 ## Stations
 
 Each installation point (a *station*) is one question with its own set of attempts. Changing the question to make a new piece only means writing a new station file.
@@ -83,6 +96,7 @@ then visit `http://localhost:8000/?station=it/amare`.
 | `?station=it/pensare` | choose the station (default set in `config.js`) |
 | `&speed=4` | run four times faster, for previewing |
 | `&debug` | show which attempt is running and the current confidence |
+| `&layout=minimal` | try the other look without editing any file |
 
 Hidden keys, for setup only: **N** or **→** starts a new cycle, **D** toggles the debug overlay.
 
@@ -153,4 +167,8 @@ docs/                 guides
 - [ ] Optional generative mode: a language model writes new attempts, the engine still controls rhythm and failure
 - [ ] More stations: *How do I know what is true?* · *How do I stop being afraid?* · *How do I become happy?*
 - [ ] Optional sound of a keyboard, very low
+
+## Credits
+
+**How to Be Human** is a project for [matteomandelli.com](https://matteomandelli.com).
 

@@ -79,11 +79,19 @@ body {
 .thread {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   padding: 0.6em 0.4em 1em;
 }
 
 .turn + .turn { margin-top: 1.1em; }
+
+/* the question stays put; a long answer scrolls under it */
+.turn-assistant {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
 
 /* ---------- the question ---------- */
 
@@ -250,6 +258,42 @@ body[data-cursor="block"] .answer[data-cursor="idle"] .cursor {
   font-size: 0.58em;
   text-align: center;
 }
+
+/* ---------- fonts ---------- */
+
+body[data-font="serif"] {
+  font-family: "Liberation Serif", "Tinos", "Times New Roman", Times, "DejaVu Serif", serif;
+}
+
+/* ---------- minimal layout: only the words, large, for a small CRT ---------- */
+
+body[data-layout="minimal"] {
+  line-height: 1.35;
+}
+
+body[data-layout="minimal"] .screen {
+  font-size: 1.5em;
+  padding: calc(var(--overscan) + 4%) calc(var(--overscan) + 6%);
+}
+
+body[data-layout="minimal"] .thread { padding: 0; }
+
+body[data-layout="minimal"] .turn-user {
+  display: block;
+  transition: none;
+}
+
+body[data-layout="minimal"] .bubble {
+  max-width: none;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+
+body[data-layout="minimal"] .turn + .turn { margin-top: 0.6em; }
+body[data-layout="minimal"] .line { min-height: 1.35em; }
+body[data-layout="minimal"] .para + .para { margin-top: 0.5em; }
+body[data-layout="minimal"] strong { font-weight: 700; }
 
 /* ---------- setup helpers ---------- */
 

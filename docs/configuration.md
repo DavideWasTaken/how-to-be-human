@@ -64,17 +64,19 @@ Chances are numbers from `0` (never) to `1` (always). Most of them grow as confi
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `textSize` | `1` | Text scale. `1.2` is 20% larger. The base size already adapts to the screen resolution |
+| `layout` | `'chat'` | `'chat'`: a familiar AI assistant interface. `'minimal'`: only the question and the answer, large, nothing else on screen |
+| `font` | automatic | `'sans'` or `'serif'`. By default sans for `chat`, serif for `minimal` |
+| `textSize` | `1` | Text scale. `1.2` is 20% larger. The base size already adapts to the screen resolution (and `minimal` is already 1.5× larger) |
 | `overscan` | `4` | Empty margin around everything, in % of the screen. Increase it if a CRT cuts off the edges |
 | `theme` | `'light'` | `'light'` (white) or `'gray'` (very light grey background) |
-| `cursor` | `'dot'` | `'dot'` (round, breathing), `'bar'` or `'block'` (both blinking) |
-| `showHeader` | `true` | The small title at the top left |
-| `showComposer` | `true` | The input box at the bottom |
-| `showFootnote` | `true` | The small line of text under the input box |
+| `cursor` | automatic | `'dot'` (round, breathing), `'bar'` or `'block'` (both blinking). By default dot for `chat`, bar for `minimal` |
+| `showHeader` | `true` | The small title at the top left (chat layout) |
+| `showComposer` | `true` | The input box at the bottom (chat layout) |
+| `showFootnote` | `true` | The small line of text under the input box (chat layout) |
 | `headerTitle` | language default | Text of the header. `''` hides it |
 | `placeholder` | language default | Grey text in the empty input box |
 | `footnote` | language default | Text under the input box. `''` hides it |
-| `introTyping` | `true` | When the machine starts, the question is typed into the input box and sent, once |
+| `introTyping` | `true` | When the machine starts, the question is typed (into the input box in `chat`, in place in `minimal`), once |
 | `antiBurnIn` | `true` | Moves the whole layout by a few pixels every cycle, so static parts do not burn into a CRT |
 
 ## `config.js`

@@ -129,6 +129,12 @@ Composite is soft and interlaced, so thin lines shimmer. In `config.js` or the s
 display: { textSize: 1.15, overscan: 7 }
 ```
 
+On a small television, the `minimal` layout (only the words, large serif type) is often easier to read from a distance than the chat interface:
+
+```js
+display: { layout: 'minimal', overscan: 7 }
+```
+
 ### VGA (computer CRT monitors)
 
 Use an **active HDMI-to-VGA adapter** (they cost a few euros). Most VGA CRTs look sharpest at 800×600 or 1024×768. To force a resolution, add to `cmdline.txt` (same single line):
