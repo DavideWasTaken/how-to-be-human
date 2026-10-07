@@ -25,6 +25,7 @@
     title: $('title'),
     thread: $('thread'),
     userTurn: $('user-turn'),
+    assistantTurn: $('assistant-turn'),
     question: $('question'),
     answer: $('answer'),
     composerArea: $('composer-area'),
@@ -38,6 +39,8 @@
 
   let performer = null;
   let started = false;
+  let minimal = false;
+  let question = '';
 
   /* ---------- loading the station ---------- */
 
@@ -74,6 +77,7 @@
       def
     );
     const d = station.display;
+    if (params.get('layout')) d.layout = params.get('layout');
     const strings = Object.assign({}, HTBH.STRINGS.en, HTBH.STRINGS[station.language] || {});
     const text = (key) => (d[key] == null ? strings[key] : d[key]);
 
@@ -83,16 +87,20 @@
     const root = document.documentElement.style;
     root.setProperty('--text-size', String(d.textSize));
     root.setProperty('--overscan', d.overscan + '%');
+    minimal = d.layout === 'minimal';
+    document.body.dataset.layout = minimal ? 'minimal' : 'chat';
     document.body.dataset.theme = d.theme;
-    document.body.dataset.cursor = d.cursor;
+    document.body.dataset.cursor = d.cursor || (minimal ? 'bar' : 'dot');
+    document.body.dataset.font = d.font || (minimal ? 'serif' : 'sans');
 
     el.title.textContent = text('headerTitle');
-    el.topbar.hidden = !d.showHeader || !text('headerTitle');
-    el.composerArea.hidden = !d.showComposer;
+    el.topbar.hidden = minimal || !d.showHeader || !text('headerTitle');
+    el.composerArea.hidden = minimal || !d.showComposer;
     el.placeholder.textContent = text('placeholder');
     el.footnote.textContent = text('footnote');
     el.footnote.hidden = !d.showFootnote || !text('footnote');
-    el.question.textContent = station.question;
+    question = station.question;
+    el.question.textContent = question;
 
     performer = new HTBH.Performer(station, ui, { speed });
     performer.run();
@@ -159,7 +167,7 @@
       });
       if (open) out += '</div>';
       el.answer.innerHTML = out;
-      el.thread.scrollTop = el.thread.scrollHeight;
+      el.assistantTurn.scrollTop = el.assistantTurn.scrollHeight;
 
       if (!cursorHidden) {
         el.answer.dataset.cursor = 'typing';
@@ -181,10 +189,22 @@
     },
 
     showQuestion(on) {
+      if (minimal) {
+        // no composer: the question is typed in place
+        if (on) el.question.textContent = question;
+        return;
+      }
       el.userTurn.classList.toggle('is-hidden', !on);
     },
 
     setInput(value) {
+      if (minimal) {
+        el.question.textContent = value;
+        const caret = document.createElement('span');
+        caret.className = 'input-caret';
+        el.question.appendChild(caret);
+        return;
+      }
       el.input.textContent = '';
       if (value) {
         el.input.appendChild(document.createTextNode(value));

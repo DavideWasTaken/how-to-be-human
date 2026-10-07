@@ -37,7 +37,9 @@ The file is JavaScript, but you only need to follow three rules:
 2. If the text contains a double quote, write it as `\"`, or use other quote marks: `«…»`, `“…”`. Apostrophes (`'`) are fine.
 3. `\n` starts a new line, `\n\n` starts a new paragraph.
 
-Start from [`stations/_template.js`](../stations/_template.js). 15–20 attempts per station across all tiers is a good amount: enough that two cycles never look alike.
+Start from [`stations/_template.js`](../stations/_template.js). About 20 attempts are enough to start; the included stations have 50–60 each.
+
+Attempts are drawn like cards from a shuffled deck, one deck per tier: an attempt does not come back until every other attempt in its tier has been used, across cycles. The more you write, the longer the installation runs before anything repeats.
 
 ## The three tiers
 

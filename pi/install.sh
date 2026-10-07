@@ -37,8 +37,9 @@ if apt-cache show chromium >/dev/null 2>&1; then
 else
   sudo apt-get install -y --no-install-recommends chromium-browser
 fi
-sudo apt-get install -y --no-install-recommends fonts-inter \
-  || echo "fonts-inter not available — falling back to system fonts."
+# Inter for the chat layout, Liberation Serif for the minimal layout
+sudo apt-get install -y --no-install-recommends fonts-inter fonts-liberation \
+  || echo "Some fonts are not available — falling back to system fonts."
 
 say "2/5  Selecting station: $STATION"
 printf 'STATION=%s\n' "$STATION" > "$APP_DIR/pi/station.conf"

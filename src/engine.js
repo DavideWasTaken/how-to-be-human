@@ -42,8 +42,10 @@
     display: {
       textSize: 1,
       overscan: 4,
+      layout: 'chat',       // 'chat' (assistant interface) | 'minimal' (only the words, large)
+      font: null,           // 'sans' | 'serif' — null: sans for chat, serif for minimal
       theme: 'light',       // 'light' | 'gray'
-      cursor: 'dot',        // 'dot' | 'bar' | 'block'
+      cursor: null,         // 'dot' | 'bar' | 'block' — null: dot for chat, bar for minimal
       showHeader: true,
       showComposer: true,
       showFootnote: true,
@@ -162,6 +164,7 @@
       this.pending = null;
       this.used = new Set();
       this.lastOpener = null;
+      this.lastPicked = null;
       this.cycleStart = performance.now();
       this.target = 1;
 
@@ -256,7 +259,6 @@
 
       this.cycleStart = performance.now();
       this.target = range(this.t.cycleSeconds);
-      this.used.clear();
 
       await this.sleep(range(this.t.firstWordDelay));
 
@@ -297,13 +299,18 @@
       return tiers[tiers.length - 1];
     }
 
+    /**
+     * Shuffle-bag selection: every attempt of a tier is used once, across
+     * cycles, before any of them comes back.
+     */
     pickAttempt(tier, first) {
       const pool = this.pools[tier] || [];
       if (!pool.length) return null;
       let candidates = pool.filter((a) => !this.used.has(a.id) && !(first && a.id === this.lastOpener));
       if (!candidates.length) {
         pool.forEach((a) => this.used.delete(a.id));
-        candidates = pool.length > 1 ? pool.filter((a) => a.id !== this.lastOpener) : pool;
+        candidates = pool.filter((a) => a.id !== this.lastOpener && a.id !== this.lastPicked);
+        if (!candidates.length) candidates = pool;
       }
       let r = Math.random() * candidates.reduce((n, a) => n + a.weight, 0);
       let pick = candidates[candidates.length - 1];
@@ -314,6 +321,7 @@
         }
       }
       this.used.add(pick.id);
+      this.lastPicked = pick.id;
       if (first) this.lastOpener = pick.id;
       return pick;
     }
