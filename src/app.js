@@ -7,7 +7,7 @@
  *
  * The topic is set in config.js, or in the address:
  *   ?topic=it/amare     this station's question
- *   &speed=3 &debug &layout=minimal &mute
+ *   &speed=3 &debug &layout=minimal
  *
  * Without a topic, the page plays every question of `conversation` in turn.
  *
@@ -54,7 +54,6 @@
 
   let page = null;       // settings shared by the whole page
   let minimal = false;
-  let sound = null;
   let current = null;    // the answer being written: { turn, answer, id }
   let active = null;     // the performer writing it
   const defs = {};
@@ -98,7 +97,7 @@
     }
 
     page = HTBH.merge({}, HTBH.DEFAULTS, {
-      timing: CONFIG.timing, behaviour: CONFIG.behaviour, display: CONFIG.display, sound: CONFIG.sound
+      timing: CONFIG.timing, behaviour: CONFIG.behaviour, display: CONFIG.display
     });
     const d = page.display;
     if (params.get('layout')) d.layout = params.get('layout');
@@ -123,11 +122,6 @@
     el.placeholder.textContent = text('placeholder');
     el.footnote.textContent = text('footnote');
     el.footnote.hidden = minimal || !d.showFootnote || !text('footnote');
-
-    sound = new HTBH.KeySound({
-      enabled: page.sound.enabled && !params.has('mute'),
-      volume: page.sound.volume
-    });
 
     for (const id of found) {
       const def = defs[id];
@@ -162,22 +156,25 @@
   /* ---------- the endless conversation ---------- */
 
   /**
-   * The question is asked and answered; then the chat is cleared and the
-   * question is asked again (a station has a single topic, so it is always
-   * the same question, with a different answer each time). With several
+   * The question is on screen and the assistant tries to answer it. When it
+   * gives up, it erases its answer: only the question is left for a few
+   * seconds, then it tries again, with other words. (Writing forward only,
+   * the chat clears instead and the question is asked again.) With several
    * topics they take turns. If follow-ups are switched on in config.js,
    * the person keeps the conversation going before it clears.
    */
   async function converse(list) {
-    let first = true;
+    let shown = null; // the topic whose question is on screen
     for (;;) {
       const order = CONFIG.shuffle ? shuffled(list) : list;
       for (const id of order) {
-        if (!first && page.display.newChatPerTopic) await newChat();
-
         const p = performers[id];
-        await ask(p.s.question, first);
-        first = false;
+        const keepQuestion = page.behaviour.backspace && shown === id && !followUpPerformers[id].length;
+        if (!keepQuestion) {
+          if (shown !== null && page.display.newChatPerTopic) await newChat();
+          await ask(p.s.question, shown === null);
+          shown = id;
+        }
         await respond(p, id, 1);
 
         const followUps = pickFollowUps(id);
@@ -204,7 +201,11 @@
     }
     active = null;
     ui.setGenerating(false);
-    finishAnswer(current);
+    if (page.behaviour.backspace && !current.answer.textContent.trim()) {
+      current.turn.remove(); // the answer erased itself: only the question is left
+    } else {
+      finishAnswer(current);
+    }
     prune();
   }
 
@@ -244,8 +245,17 @@
     return a;
   }
 
-  /** The question is typed like a person would (into the input box, or in place in minimal), then sent. */
+  /**
+   * The question appears: already written (default), or typed like a person
+   * would (into the input box, or in place in minimal) and then sent.
+   */
   async function ask(question, first) {
+    if (!page.display.typeQuestion) {
+      addUserTurn(question);
+      scrollToEnd();
+      await wait(first ? 1.2 : 0.6);
+      return;
+    }
     await wait(first ? 1.6 : 0.6);
     let target = null;
     if (minimal) {
@@ -254,7 +264,6 @@
     }
     for (let i = 0; i < question.length; i++) {
       setTyped(target, question.slice(0, i + 1));
-      if (sound) sound.typed(question[i], 0);
       await wait(rand(0.07, 0.22) + (question[i] === ' ' ? rand(0, 0.15) : 0));
     }
     await wait(0.8);
@@ -262,7 +271,6 @@
       target.textContent = question;
     } else {
       el.send.classList.add('is-pressed');
-      if (sound) sound.typed('\n', 0);
       setTimeout(() => el.send.classList.remove('is-pressed'), 180);
       await wait(0.2);
       setTyped(null, '');

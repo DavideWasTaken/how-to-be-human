@@ -27,16 +27,16 @@
       finalHold: [2, 4],          // the cursor waits on the last words before the answer ends
       followUpSeconds: [20, 32],  // like cycleSeconds, for answers to the person's follow-ups
       nextFollowUp: [2.5, 4.5],   // after an answer, before the person writes again
-      nextQuestion: [5, 8]        // after a conversation closes, before the next topic begins
+      nextQuestion: [3, 6]        // after an answer: only the question on screen, then it tries again
     },
     behaviour: {
-      backspace: false,     // false: writing only goes forward, like a chat assistant.
-                            // true: it also erases, retypes and takes sentences back
+      backspace: true,      // true: it erases, retypes and takes sentences back, and at the end
+                            // erases the whole answer and tries again. false: writing only goes forward
       eraseAttempt: 0.6,    // chance an attempt is erased entirely when it ends
       erasePartial: 0.2,    // chance it is cut in half instead ("late regret")
-      abortChance: 0.25,    // chance an attempt stops halfway through
+      abortChance: 0.3,     // chance an attempt stops halfway through
       hesitation: 0.08,     // chance of a micro-pause before any word
-      retypeWord: 0.035,    // chance a word is erased and retyped identical
+      retypeWord: 0.05,     // chance a word is erased and retyped identical
       longThink: 0.18,      // chance of a long cursor hold between attempts
       streaming: true,      // when confident, text arrives in token-like chunks
       confidenceCurve: 1,   // >1 loses confidence faster, <1 holds on longer
@@ -56,12 +56,9 @@
       headerTitle: null,    // null = default for the language, '' = hidden
       placeholder: null,
       footnote: null,
-      newChatPerTopic: true, // before the question is asked again, the chat is cleared
+      typeQuestion: false,  // false: the question is already written; true: it is typed and sent
+      newChatPerTopic: true, // when the topic changes (or, writing forward only, before each new round) the chat clears
       antiBurnIn: true      // shifts the layout by a few pixels for every answer
-    },
-    sound: {
-      enabled: true,        // a soft key click for every character written or erased
-      volume: 0.35          // 0–1
     },
     attempts: {}
   };

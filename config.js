@@ -1,15 +1,15 @@
 /*
  * How to Be Human — configuration.
  *
- * A station is one topic: a child asks the question, the assistant answers,
- * the chat clears, and the same question is asked again, with a different
- * answer every time. Each topic lives in its own file in questions/.
+ * A station is one topic: the child's question is already on screen, and the
+ * assistant keeps trying to answer it, getting lost, erasing, starting over,
+ * giving up and trying again. Each topic lives in its own file in questions/.
  *
  * On the Raspberry Pi the topic is usually chosen on the SD card instead
  * (how-to-be-human.txt, see docs/raspberry-pi.md). In a browser:
  * index.html?topic=it/paura
  *
- * Anything in `timing`, `behaviour`, `display` or `sound` applies to every
+ * Anything in `timing`, `behaviour` or `display` applies to every
  * topic; a question file can still override timing and behaviour.
  * All options: docs/configuration.md
  */
@@ -34,7 +34,6 @@ window.HTBH_CONFIG = {
   followUps: false,
 
   timing: {},
-  behaviour: {},            // e.g. { backspace: true } to let it erase as well
-  display: {},              // e.g. { layout: 'minimal' }
-  sound: {}                 // e.g. { volume: 0.2 } or { enabled: false }
+  behaviour: {},            // e.g. { backspace: false } to make it write forward only
+  display: {}               // e.g. { layout: 'minimal' }
 };

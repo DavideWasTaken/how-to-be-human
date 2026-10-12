@@ -26,8 +26,7 @@ window.HTBH_CONFIG = {
 
   timing: {},
   behaviour: {},
-  display: {},
-  sound: {}
+  display: {}
 };
 ```
 
@@ -66,9 +65,9 @@ All values in seconds unless noted.
 | `finalHold` | `[2, 4]` | The cursor waits on the last words before the answer ends |
 | `followUpSeconds` | `[20, 32]` | Only with `followUps: true`. Like `cycleSeconds`, for the answers to the person's follow-up messages. A single message can set its own with `seconds` |
 | `nextFollowUp` | `[2.5, 4.5]` | Only with `followUps: true`. After an answer, before the person writes again (set in `config.js`) |
-| `nextQuestion` | `[5, 8]` | After the answer ends, before the chat clears and the question is asked again (set in `config.js`) |
-| `eraseSpeed` | `26` | Only with `backspace: true`. Characters per second when deleting |
-| `lateRegretDelay` | `[1.6, 2.6]` | Only with `backspace: true`. Wait before half of a finished sentence is taken back |
+| `nextQuestion` | `[3, 6]` | After the answer has been erased: only the question on screen, then it tries again (set in `config.js`) |
+| `eraseSpeed` | `26` | Characters per second when deleting. Long erases speed up like a held key |
+| `lateRegretDelay` | `[1.6, 2.6]` | Wait before half of a finished sentence is taken back |
 
 ## `behaviour`
 
@@ -76,17 +75,17 @@ Chances are numbers from `0` (never) to `1` (always). Most of them grow as confi
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `backspace` | `false` | `false`: the writing only goes forward, like a chat assistant; changes of mind leave the sentence unfinished and start a new paragraph. `true`: it also deletes, retypes and takes sentences back |
-| `abortChance` | `0.25` | Chance an attempt stops after a random word |
+| `backspace` | `true` | `true`: it deletes, retypes and takes sentences back, and at the end erases the whole answer, leaving only the question before trying again. `false`: the writing only goes forward, like a chat assistant; changes of mind leave the sentence unfinished and start a new paragraph, and the chat clears between rounds |
+| `abortChance` | `0.3` | Chance an attempt stops after a random word |
 | `hesitation` | `0.08` | Chance of a small pause before each word |
 | `longThink` | `0.18` | Chance of a long silence between attempts |
 | `streaming` | `true` | While confident, text arrives in chunks like a language model. `false` = always letter by letter |
 | `confidenceCurve` | `1` | Shape of the confidence drop. `2` loses it early, `0.5` holds on until late |
-| `eraseAttempt` | `0.6` | Only with `backspace: true`. When an attempt ends, chance it is erased completely |
-| `erasePartial` | `0.2` | Only with `backspace: true`. …chance half of it is taken back instead |
-| `retypeWord` | `0.035` | Only with `backspace: true`. Chance a word is erased and typed again identical |
-| `maxKeptChars` | `420` | Only with `backspace: true`. When the text grows past this, paragraphs are pulled back |
-| `finalErase` | `'backspace'` | Only with `backspace: true`. How the answer disappears at the end: `'backspace'`, `'fade'` or `'instant'` |
+| `eraseAttempt` | `0.6` | When an attempt ends, chance it is erased completely |
+| `erasePartial` | `0.2` | …chance half of it is taken back instead |
+| `retypeWord` | `0.05` | Chance a word is erased and typed again identical |
+| `maxKeptChars` | `420` | When the text grows past this, paragraphs are pulled back |
+| `finalErase` | `'backspace'` | How the answer disappears at the end: `'backspace'`, `'fade'` or `'instant'` |
 
 ## `display`
 
@@ -105,17 +104,9 @@ Set in `config.js` only.
 | `showFootnote` | `true` | The line of text under the input box (chat layout) |
 | `headerTitle` | language default | Text of the header. `''` hides it |
 | `placeholder` | language default | Grey text in the empty input box |
-| `footnote` | language default | Text under the input box. Italian default: *L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.* |
-| `newChatPerTopic` | `true` | Before the question is asked again, the chat fades and starts empty. `false`: one single chat that keeps scrolling, the question repeated in it |
+| `footnote` | language default | Text under the input box. Italian default: *L'assistente può commettere errori. Verifica le informazioni importanti.* |
+| `typeQuestion` | `false` | `false`: the question is already written when the station starts. `true`: it is typed into the input box and sent, like a person would |
+| `newChatPerTopic` | `true` | When the topic changes (with several topics), or before every round when `backspace` is `false`, the chat fades and starts empty |
 | `antiBurnIn` | `true` | Moves the whole layout by a few pixels for every answer, so static parts do not burn into a CRT |
 
 Other interface languages can be added in `src/i18n.js`.
-
-## `sound`
-
-| Setting | Default | Meaning |
-|---|---|---|
-| `enabled` | `true` | A soft keyboard click for every letter of the questions as they are typed into the input box. The answers are silent. Synthesised, no audio files |
-| `volume` | `0.35` | From `0` to `1` |
-
-Add `?mute` to the address to silence it while previewing. Desktop browsers start the sound only after a click or a key press on the page; the Raspberry Pi kiosk plays it from the start.

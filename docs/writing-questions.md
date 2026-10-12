@@ -104,7 +104,7 @@ fragile                    ░░▒▒▒▓▓▓▓▓███████�
 | `fragile` | the end | One to five words. The beginning of a sentence that does not continue |
 | `closing` | optional, once, as the very last attempt | The last words of the answer, where the cursor waits before it stops |
 
-Attempts follow each other in the same answer: each one starts a new paragraph (or, after a full stop, sometimes continues on the same line). So an answer reads as a sequence of fresh starts that get shorter and shorter.
+Attempts follow each other in the same answer. Most are erased when they end; some stay, and the next attempt starts below them. At the end of the answer everything is erased, the question is left alone for a few seconds, and a new answer begins.
 
 ## Markup reference
 
@@ -121,17 +121,22 @@ Commands go in square brackets, inside the text. Case does not matter.
 
 Pauses get a little longer as confidence drops.
 
-### Changes of mind
+### Erasing
 
-The writing only goes forward, like a real chat assistant: nothing on screen is ever deleted. The erase commands mark the places where the machine changes its mind. **The sentence is abandoned there, unfinished, and whatever follows in the attempt starts again in a new paragraph** (with a capital letter).
+The machine deletes what it has just written, backspace by backspace. An erase never goes further back than the start of the current attempt.
 
-| Command | Effect (default) |
+| Command | Effect |
 |---|---|
-| `[erase word]`, `[erase 3 words]`, `[erase 12]` | abandon the sentence here; what follows starts over |
-| `[erase sentence]`, `[erase line]`, `[erase half]`, `[erase all]` | the same |
-| `[retype]` | the same |
+| `[erase word]` | the last word (punctuation attached to it goes too) |
+| `[erase 3 words]` | the last three words |
+| `[erase 12]` | the last 12 characters |
+| `[erase sentence]` | back to the end of the previous sentence |
+| `[erase line]` | the current line |
+| `[erase half]` | roughly the second half of this attempt |
+| `[erase all]` | everything this attempt has written |
+| `[retype]` | erases the last word and types it again, identical |
 
-The number in a command only matters if erasing is switched on (`behaviour.backspace: true`, see [configuration.md](configuration.md)). Then the machine really deletes: the last word, three words, 12 characters, back to the previous sentence, the current line, half of the attempt, or everything the attempt wrote, and `[retype]` erases the last word and types it again identical. Writing the numbers carefully keeps both modes possible.
+With `behaviour.backspace: false` (see [configuration.md](configuration.md)) the machine never deletes: the sentence is abandoned at each erase command, unfinished, and whatever follows starts again in a new paragraph.
 
 ### Typing
 
@@ -152,11 +157,11 @@ Lines that start with `1. ` or `- ` are laid out as list items.
 "Amare significa innanzitutto [pause][erase word][pause]prendersi cura di qualcuno, [pause]accettarlo per quello che è e [long pause][erase 4 words][think]"
 ```
 
-1. Types *“Amare significa innanzitutto”*: fast and fluent if it is early in the answer
-2. Pauses. The sentence stays unfinished
-3. A new paragraph: *“Prendersi cura di qualcuno, accettarlo per quello che è e”*
-4. A long pause, then the cursor waits for 4–5 seconds
-5. The next attempt starts below
+1. Types *“Amare significa innanzitutto ”*: fast and fluent if it is early in the answer
+2. Pauses, deletes *“innanzitutto”*, pauses again
+3. Continues: *“Amare significa prendersi cura di qualcuno, accettarlo per quello che è e ”*
+4. A long pause, then deletes *“per quello che è e”*, and the cursor waits for 4–5 seconds
+5. The engine decides: erase all of it, take back half, or leave it there and try something else below
 
 ## What the engine adds on its own
 
@@ -168,10 +173,13 @@ You do not write these; they happen on top of what you wrote, more often as conf
 | Slowing down | typing speed falls from `typingSpeed` to `minTypingSpeed` across the answer | `timing` |
 | Punctuation | a breath after commas, a longer one after full stops | — |
 | Hesitation | a small pause before a word | `hesitation` |
-| Abort | the attempt stops after a random word and is left unfinished | `abortChance` |
+| Abort | the attempt stops at a random point, waits, and is erased | `abortChance` |
+| Retype | a word is erased and typed again identical | `retypeWord` |
+| Late regret | the attempt ends, a couple of seconds pass, half of it is erased | `erasePartial` |
 | Long think | a 4–5 s silence between attempts | `longThink` |
+| Retraction | if the answer grows too long, the last paragraph is pulled back | `maxKeptChars` |
 
-Because an attempt can stop after any word, the same text produces many different fragments. A long confident attempt might be seen complete, or only its first six words.
+Because an attempt can stop anywhere, the same text produces many different fragments. A long confident attempt might be seen complete, or only its first six words.
 
 ## Writing tips
 
@@ -179,11 +187,11 @@ Because an attempt can stop after any word, the same text produces many differen
 
 **Fail with grammar, not with noise.** Every fragment on screen should be a believable beginning of a sentence. No random letters, no glitches, no *ERRORE*. If it stops, it stops at a place where a person could have stopped.
 
-**Stop just before the answer.** The most powerful moment is right before the word that would actually say something: *“Per amare un'altra persona è importante prima”* … and then a new paragraph about something else.
+**Stop just before the answer.** The most powerful moment is right before the word that would actually say something: *“Per amare un'altra persona è importante prima ”* … pause … erase.
 
 **Let the formula show.** Lists that never reach item 2. *“Ecco cinque passi:”* followed by step 1 and nothing else. A colon left hanging.
 
-**Start over with the same words.** `[erase word][pause]` followed by the same word gives a new paragraph that begins exactly where the last one stopped: a stammer, without a single deleted letter.
+**Erase and come back the same.** `[erase word][pause]` followed by the same word says more than a new word would.
 
 **Turn the question around, rarely.** A few searching attempts can slip: *“Chi sono io? Sono un assistente che…”*. Keep these few; they work because they are unexpected.
 

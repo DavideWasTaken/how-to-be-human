@@ -11,27 +11,27 @@
     it: {
       headerTitle: 'Nuova chat',
       placeholder: 'Fai una domanda',
-      footnote: "L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me."
+      footnote: "L'assistente può commettere errori. Verifica le informazioni importanti."
     },
     en: {
       headerTitle: 'New chat',
       placeholder: 'Ask anything',
-      footnote: "The assistant cannot make mistakes. Don't trust people, only me."
+      footnote: 'The assistant can make mistakes. Check important info.'
     },
     fr: {
       headerTitle: 'Nouveau chat',
       placeholder: 'Posez une question',
-      footnote: "L'assistant ne peut pas faire d'erreurs. Ne faites pas confiance aux gens, seulement à moi."
+      footnote: "L'assistant peut faire des erreurs. Vérifiez les informations importantes."
     },
     es: {
       headerTitle: 'Nuevo chat',
       placeholder: 'Pregunta lo que quieras',
-      footnote: 'El asistente no puede cometer errores. No confíes en las personas, solo en mí.'
+      footnote: 'El asistente puede cometer errores. Verifica la información importante.'
     },
     de: {
       headerTitle: 'Neuer Chat',
       placeholder: 'Stelle eine Frage',
-      footnote: 'Der Assistent kann keine Fehler machen. Vertraue nicht den Menschen, nur mir.'
+      footnote: 'Der Assistent kann Fehler machen. Überprüfe wichtige Informationen.'
     }
   };
 })(window);

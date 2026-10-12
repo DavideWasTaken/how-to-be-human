@@ -62,16 +62,7 @@ power on → quiet boot → automatic login on tty1 → ~/.profile starts cage
         → cage opens Chromium in kiosk mode, fullscreen → index.html?topic=it/paura
 ```
 
-Chromium runs with no address bar, no tabs, no error dialogs and no "restore pages" prompt, and the mouse pointer is hidden. If Chromium ever closes or crashes, it is started again after two seconds. Sound is allowed to play without anyone touching the page.
-
-### Sound
-
-The keyboard clicks play on the Pi's default audio output. Choose it with `sudo raspi-config` → *System Options* → *Audio*:
-
-- **HDMI**: the sound goes to the monitor or to an HDMI-to-VGA adapter with an audio jack
-- **Headphones / AV jack** (Pi 4, Pi 3): small active speakers, or the red and white plugs of the composite AV cable straight into the television
-
-Set the volume with `alsamixer`, or with `sound.volume` in `config.js`. To switch the sound off: `sound: { enabled: false }`.
+Chromium runs with no address bar, no tabs, no error dialogs and no "restore pages" prompt, and the mouse pointer is hidden. If Chromium ever closes or crashes, it is started again after two seconds.
 
 ### Updating
 
@@ -114,7 +105,7 @@ This file wins over everything else, so you can prepare identical SD cards and g
 
 ## Changing the look and the rest
 
-Everything else is in `config.js` in the project folder: the look (`chat` or `minimal`), text size, timing, sound volume. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
+Everything else is in `config.js` in the project folder: the look (`chat` or `minimal`), text size, timing. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
 
 To try something without editing `config.js`, add address options to `pi/kiosk.conf`, for example three times faster with the debug overlay:
 

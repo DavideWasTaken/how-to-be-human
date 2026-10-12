@@ -2,9 +2,9 @@
 
 # HOW TO BE HUMAN
 
-**A machine that has an answer for everything meets questions it can't answer.**
+**An AI that has an answer for everything, losing it over questions too deep for it.**
 
-<img src="docs/images/chat.png" alt="A clean chat interface. Under the question “Come faccio a capire chi sono?” the assistant has written three short paragraphs: “Un buon punto di partenza è chiedersi: cosa direbbero di me le persone che mi conoscono?”, “La risposta breve è: sei tu.”, “Hai un nome. Il nome dice chi sei?”. Below, the input box and the line “L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.”" width="560">
+<img src="docs/images/chat.png" alt="A clean chat interface. The question “Come faccio ad amare?” sits in a grey bubble; below it the assistant is halfway through a sentence, followed by a black cursor dot. Under the input box: “L'assistente può commettere errori. Verifica le informazioni importanti.”" width="560">
 
 <sub>An installation for Raspberry Pi and 4:3 CRT monitors · no AI model involved · every word is written by hand</sub>
 
@@ -18,44 +18,43 @@
 
 ## The idea
 
-A row of old screens, each showing a familiar-looking AI chat. At each one a child types one of the oldest questions there are:
+A row of old CRT screens, each showing a familiar AI chat. On each one a child's question is already written, one of the oldest questions there are:
 
 > *Come faccio a pensare?* · *Come faccio a capire chi sono?* · *Come faccio ad amare?* · *Come faccio a essere felice?* · *Come faccio a sapere cosa è vero?* · *Come faccio a non avere paura?* · *Come faccio a sognare?*
 
-The machine answers the way it always answers: fluently, helpfully, with the formulas that work so well for recipes and explanations. *“Ottima domanda!”* *“Dipende da…”* *“Ecco alcuni aspetti da considerare:”* *“Puoi iniziare da…”*
+Below it, the assistant starts answering the way it answers everything: fluent, helpful, sure of itself. *“Ottima domanda!”* *“Dipende da…”* *“Ecco alcuni aspetti da considerare:”* *“Puoi iniziare da…”*
 
-Then it slows down. A list never reaches its second point. A sentence stops right before the word that would say something, and the next paragraph starts over from somewhere else. It tries a definition, a quote, an example. The paragraphs get shorter. The cursor sits still for five seconds. In the end only a word or two is left, and the answer simply stops. The chat clears, the child asks the same question again, and the machine tries again: with different words, and with the same result.
+And then it goes to pieces. It writes, stops, deletes the sentence and goes back. It rephrases. It retypes the same word. It finishes a sentence and takes half of it back. It tries a list, a definition, a philosopher, a breathing exercise. It never stops trying, and it never leaves the topic: every attempt is about the question, and none of them gets anywhere. In the end it erases everything, and the question is left alone on the screen for a few seconds. Then it tries again.
 
-There is no error message and no “I don't know”. Nothing glitches, and nothing is ever erased: like a real assistant, it only writes forward. The failure is something the viewer **sees**, in what the machine does.
+Under the input box, the small print every assistant carries:
 
-Under the input box, where assistants usually admit they can make mistakes, it says instead:
+> *L'assistente può commettere errori. Verifica le informazioni importanti.*
 
-> *L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.*
+Here it reads as an understatement.
 
-> The machine thinks it knows how to answer everything. Here it meets questions it keeps trying to answer with its own tools, and something never quite adds up.
->
-> It is not a stupid AI. It is an AI that looks intelligent at the very moment it discovers the limits of its language.
+> **How to Be Human** makes fun of the machine. A tool built to have an answer for everything, faced with questions that are simply too deep for it: its confidence, its formulas, its lists and bold headings, and its frantic attempts to save face, while the child's question just waits.
 
 ## How it behaves
 
-Each screen is a **station** with a single topic. The child asks one question, and only that one, over and over:
+Each screen is a **station** with a single question, already written when it starts. The assistant tries, flounders, erases, and tries again, forever:
 
 ```
-BAMBINO   Come faccio a non avere paura?
-AI        In sintesi: respira, parlane, affrontala piano piano. E se non funziona
-          Montaigne scrisse che chi teme di soffrire soffre già di ciò che teme. Quindi
-          Essere coraggiosi non significa non avere paura, ma agire nonostante
-          Paura
-                                                       — the chat clears —
-BAMBINO   Come faccio a non avere paura?
-AI        Dipende da cosa ti fa paura.
-          Certo! Una tecnica molto efficace si chiama esposizione graduale: …
-          La paura è un'emozione naturale che ci protegge dai pericoli. Ecco alcune strategie:
-          1. Respira lentamente.  2. Dai un nome alla paura.  3.
-          Quando
-```
+BAMBINO   Come faccio a capire chi sono?
 
-The question is typed into the input box and sent; the answer streams in below it, and the small icons appear under it when it ends. A few seconds later the chat fades (*Nuova chat*), and the same question is typed again. Every answer stays on the topic, and every answer is different. One round lasts about a minute and a quarter.
+AI        Ottima domanda! L'identità personale è formata da molti elementi: il tuo nome,
+          la tua storia, le persone che            ← stops, erases “le persone che”
+          …
+          Sei quello che fai. Oppure               ← erases “Oppure”
+          Sei quello che pensi.                    ← erases it, writes “Sei”, waits
+          …
+          Capire                                   ← erases, retypes “Capire”, gives up
+                                                   ← erases the whole answer
+BAMBINO   Come faccio a capire chi sono?           (alone on screen for a few seconds)
+
+AI        Certo! Ecco un semplice test per scoprire chi sei:
+          1. Ti piace stare in compagnia o da solo?
+          2.                                       ← erases the line, then everything
+```
 
 Every answer follows the same arc, put together differently each time from a pool of hand-written attempts:
 
@@ -63,30 +62,36 @@ Every answer follows the same arc, put together differently each time from a poo
 confidence   ██████████████▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒░░░░░░
 attempts     confident ──→ searching ──→ fragile ──→ closing
 typing       streams fluently ──→ slows down ──→ letter by letter, long silences
-then         the answer stops · the icons appear · the chat clears · the same question again
+then         the whole answer is erased · only the question is left · it tries again
 ```
 
 - **Confident** attempts use the voice of an assistant at its best: lists, bold headings, *“In generale…”*.
 - **Searching** attempts change strategy: examples, definitions, philosophers, rephrasing the question.
 - **Fragile** attempts are a word or two.
-- While it is confident, text arrives in quick chunks the way language models stream. As confidence drains away, the typing turns slower and more human, one letter at a time.
+- While it is confident, text arrives in quick chunks the way language models stream. As confidence drains away, the typing turns slower and more hesitant, one letter at a time.
 
-On top of what is written, the engine adds small irregularities that are different every time: attempts that stop after a random word, hesitations before words, long silences with only the cursor breathing. Where an attempt changes its mind, the sentence is left unfinished and the thought starts again in a new paragraph.
+On top of what is written, the engine adds its own panic, different every time:
 
-Each topic has 45–60 attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can stop at a different word. The same answer practically never appears twice, even over a whole day.
+| | |
+|---|---|
+| **Backtracking** | sentences, words and whole lines are deleted and rewritten |
+| **Abort** | an attempt stops halfway, waits, and is erased |
+| **Late regret** | a sentence is completed, then after two seconds half of it is taken back |
+| **Retype** | a word is erased and written again, exactly the same |
+| **Hesitation** | small pauses before words, more frequent as confidence drops |
+| **Long think** | the cursor stays still for 4–5 seconds |
+| **Retraction** | when the answer piles up, whole paragraphs are pulled back |
 
-Each topic also contains four longer **follow-up conversations** (the child insists, asks the machine about itself, says goodbye). They are switched off, since each child asks a single question; `followUps: true` in `config.js` brings them back.
+Each topic has 45–60 attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can break off at a different point. The same answer practically never appears twice, even over a whole day. A round, from the first word to the empty screen, lasts about a minute.
 
-### Sound
-
-Only the person asking makes a sound. While each question is typed into the input box, a soft keyboard click follows it letter by letter: a deeper press for the space bar, a fuller one for sending. The machine's answers appear in silence. The sound is synthesised in the browser (no audio files) and every press varies slightly. Set the volume or switch it off with `sound: { volume, enabled }` in `config.js`.
+There is no sound: the question is already there when the station starts, and the machine flounders in silence.
 
 ## Two looks
 
 | `layout: 'chat'` (default) | `layout: 'minimal'` |
 |---|---|
-| <img src="docs/images/chat.png" alt="Chat layout: grey question bubble, answer paragraphs, input box at the bottom." width="380"> | <img src="docs/images/minimal.png" alt="Minimal layout: only the words in large serif type, the question in bold." width="380"> |
-| A familiar AI assistant: question bubbles, input box, round cursor, icons under each answer. Nothing branded | Only the words, large, in a serif face with a bar cursor; questions in bold. Made for small CRTs read from a distance |
+| <img src="docs/images/chat.png" alt="Chat layout: grey question bubble, the answer being written, input box at the bottom." width="380"> | <img src="docs/images/minimal.png" alt="Minimal layout: only the words in large serif type, the question in bold." width="380"> |
+| A familiar AI assistant: question bubble, input box, round cursor. Nothing branded | Only the words, large, in a serif face with a bar cursor; the question in bold. Made for small CRTs read from a distance |
 
 Switch with one line in `config.js`: `display: { layout: 'minimal' }`. To compare, add `?layout=minimal` to the address.
 
@@ -105,7 +110,7 @@ Each station shows one topic. Watch each one live:
 | `it/sognare` | Come faccio a sognare? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/sognare) |
 | `en/think` · `en/who-am-i` · `en/love` · `en/happy` · `en/true` · `en/afraid` · `en/dream` | the same questions in English | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=en/love) |
 
-The topic of a station is set in [`config.js`](config.js) (`topic: 'it/amare'`), in the address (`?topic=it/paura`), or on a Raspberry Pi with a small text file on its SD card. Leave `topic` empty to have one screen play every topic in turn.
+The topic of a station is set in [`config.js`](config.js) (`topic: 'it/amare'`), in the address (`?topic=it/paura`), or on a Raspberry Pi with a small text file on its SD card. Leave `topic` empty to have one screen go through every topic in turn.
 
 ## Try it
 
@@ -123,16 +128,15 @@ then visit `http://localhost:8000`.
 | `?speed=3` | everything three times faster, for previewing |
 | `?layout=minimal` | the other look, without editing any file |
 | `?debug` | shows which attempt is running and how much confidence is left |
-| `?mute` | no keyboard sound |
 
-Options can be combined: `?topic=it/paura&speed=3`. Browsers keep sound off until you click once on the page; the Raspberry Pi kiosk plays it straight away.
+Options can be combined: `?topic=it/paura&speed=3`.
 
-Hidden keys, for setup only: **N** or **→** ends the current answer and moves on, **D** toggles the debug overlay.
+Hidden keys, for setup only: **N** or **→** ends the current answer and starts the next one, **D** toggles the debug overlay.
 
-## Add a question
+## Add a topic
 
 1. Copy [`questions/_template.js`](questions/_template.js) to, say, `questions/it/perdonare.js`
-2. Write the question and the attempts. Pauses and changes of mind are written inline:
+2. Write the question and the attempts. Pauses and erasing are written inline:
 
    ```js
    HTBH.question({
@@ -151,10 +155,11 @@ Hidden keys, for setup only: **N** or **→** ends the current answer and moves 
 
 The full markup and tips on writing attempts that fail gracefully: **[docs/writing-questions.md](docs/writing-questions.md)**. Every setting: **[docs/configuration.md](docs/configuration.md)**.
 
-To check how a question behaves over many answers without watching it:
+To check a topic over many answers without watching it:
 
 ```bash
 node tools/simulate.js it/amare 300
+node tools/check.js
 ```
 
 ## Run it on a Raspberry Pi
@@ -172,7 +177,7 @@ From then on, every time it is powered on, the Pi goes straight into its station
 
 To change a station's topic without connecting to it, put the SD card in any computer and write the topic in `how-to-be-human.txt` on its boot partition. Seven identical SD cards, one line each, make seven stations.
 
-Step-by-step guide, CRT setup (composite PAL/NTSC or VGA), sound output and troubleshooting: **[docs/raspberry-pi.md](docs/raspberry-pi.md)**.
+Step-by-step guide, CRT setup (composite PAL/NTSC or VGA) and troubleshooting: **[docs/raspberry-pi.md](docs/raspberry-pi.md)**.
 
 ## Project structure
 
@@ -180,20 +185,20 @@ Step-by-step guide, CRT setup (composite PAL/NTSC or VGA), sound output and trou
 index.html            the page
 config.js             the station's topic and settings for everything
 src/
-  engine.js           writes one answer: typing, hesitating, confidence
-  app.js              the station: asks, answers, clears, asks again
-  sound.js            keyboard clicks, synthesised, in step with the text
+  engine.js           writes, hesitates, erases, gives up, tries again
+  app.js              the station: shows the question, runs the attempts
   style.css           both layouts, sized for 4:3
   i18n.js             interface text per language
 questions/
-  it/ en/             one file per question
+  it/ en/             one file per topic
   _template.js        start here for a new one
 pi/
   install.sh          Raspberry Pi kiosk setup
   kiosk.sh            launches the browser fullscreen
   how-to-be-human.txt topic selector to copy onto the SD card
-tools/simulate.js     answers a question on a virtual clock and prints statistics
-tools/check.js        checks every topic and its follow-up conversations
+tools/
+  simulate.js         answers a topic on a virtual clock and prints statistics
+  check.js            checks every topic for mistakes in the markup
 docs/                 guides
 ```
 
