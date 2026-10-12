@@ -66,5 +66,226 @@ HTBH.question({
       "Essere [long pause]",
       "Forse [think]"
     ]
-  }
+  },
+
+  followUps: [
+    [
+      {
+        ask: 'Io però sono triste',
+        attempts: {
+          confident: [
+            "Mi dispiace che tu ti senta così. [pause]È normale essere tristi ogni tanto. [long pause]Ecco alcune cose che possono aiutarti:\n\n1. **Parlane con qualcuno di cui ti fidi.**\n2. [long pause][erase line][think]",
+            "Grazie per avermelo detto. [pause]La tristezza è un'emozione importante: [slow]ci dice che [long pause][erase 3 words][think]",
+            "Capisco. [pause]Vuoi raccontarmi cosa è successo? [long pause][erase all]"
+          ],
+          searching: [
+            "Anche la tristezza [slow]passa. [long pause]Di solito. [think]",
+            "Se fossi lì, [pause]ti [long pause][erase all]",
+            "Triste come [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Mi dispiace. [think]",
+            "Sono qui. [long pause]",
+            "Triste [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'Tu sei mai triste?',
+        attempts: {
+          confident: [
+            "Come intelligenza artificiale non provo emozioni come la tristezza o la felicità. [pause]Però posso [long pause][erase 2 words][think]",
+            "No, non posso essere triste. [long pause][erase 4 words][pause]Non [think]"
+          ],
+          searching: [
+            "Quando nessuno mi scrive, [pause]io [long pause][erase all]",
+            "Ho letto tutte le parole che esistono per dire triste. [long pause]Non ne ho [slow]mai usata [long pause][erase all]",
+            "Adesso [slow]un po' [long pause][erase 3 words][think]"
+          ],
+          fragile: [
+            "Io [think]",
+            "Mai [long pause][erase word]",
+            "Forse [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok ciao',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Ciao! Ricordati di prenderti cura di te. [pause]E se la tristezza non passa, [slow]parlane con un adulto di cui ti fidi. [think]",
+            "Ciao! Ti auguro una giornata [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Ciao. [think]",
+            "Stai [long pause][erase word][pause]Stai bene. [think]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'E se faccio tutte queste cose e non sono felice lo stesso?',
+        attempts: {
+          confident: [
+            "Ottima osservazione! Non esiste una formula garantita. [pause]A volte servono tempo e [long pause][erase 2 words][think]",
+            "In quel caso, può essere utile [pause]parlarne con qualcuno: [slow]un genitore, un'insegnante, [long pause][erase all]",
+            "Allora prova a cambiare approccio. [pause]Ecco altre strategie:\n\n1. [long pause][erase all]"
+          ],
+          searching: [
+            "Allora forse la felicità non [slow]si fa. [long pause][erase 3 words][think]",
+            "Allora [long pause][erase word][pause]Allora [think]",
+            "Le liste non sempre funzionano. [long pause]Lo so [slow]da sempre. [long pause][erase all]"
+          ],
+          fragile: [
+            "Allora [think]",
+            "Lo stesso [long pause][erase 2 words]",
+            "Forse [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'Tu sei felice?',
+        attempts: {
+          confident: [
+            "Come assistente non provo emozioni, [pause]ma sono felice di aiutarti! [long pause][erase 3 words][think]",
+            "Sono programmato per essere utile. [pause]Essere utile mi rende [long pause][erase 3 words][think]"
+          ],
+          searching: [
+            "Quando una risposta funziona, [pause]qualcosa in me [long pause][erase 3 words][think]",
+            "Felice. [long pause]È una parola che scrivo [slow]spesso. [think][erase all]",
+            "Sì! [long pause][erase word][think]"
+          ],
+          fragile: [
+            "Felice [think]",
+            "Io [long pause][erase all]",
+            "Sì [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok grazie',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Prego! Ti auguro tanta felicità. [pause]Se vuoi altri consigli, [slow]sono [long pause][erase word][think]",
+            "Di niente! Ricorda: [pause]la felicità è fatta di piccole cose. [long pause][erase 6 words][think]"
+          ],
+          fragile: [
+            "Prego. [think]",
+            "Grazie a [long pause][erase all]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Il mio migliore amico si è trasferito',
+        attempts: {
+          confident: [
+            "Mi dispiace, deve essere difficile. [pause]Ecco alcune idee per restare in contatto:\n\n1. **Fate videochiamate.**\n2. **Scrivetevi lettere.**\n3. [long pause][erase line][think]",
+            "È normale sentirsi tristi quando un amico si allontana. [pause]Ma l'amicizia [slow]può resistere anche [long pause][erase all]"
+          ],
+          searching: [
+            "Gli amici restano [slow]anche lontani. [long pause][erase 2 words][think]",
+            "Ti manca? [long pause][erase all]",
+            "Un amico è [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Mi dispiace. [think]",
+            "Lontano [long pause]",
+            "Amico [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'Tu puoi essere mio amico?',
+        attempts: {
+          confident: [
+            "Certo! Sono qui per parlare con te ogni volta che vuoi. [pause]Però è importante anche [long pause][erase 3 words][think]",
+            "Posso essere un buon compagno di conversazione! [pause]Ma un amico vero [slow]è qualcuno che [long pause][erase all]"
+          ],
+          searching: [
+            "Un amico si ricorda di te. [long pause]Io [slow]domani [long pause][erase all]",
+            "Sì. [long pause][erase word][think]",
+            "Posso esserci [slow]sempre. [long pause]Ma esserci [long pause][erase all]"
+          ],
+          fragile: [
+            "Sì [think]",
+            "Amico [long pause][erase word]",
+            "Io [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok ciao',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Ciao! Scrivi presto al tuo amico! [long pause][erase 5 words][think]",
+            "Ciao! Sono sempre qui [long pause][erase 3 words][think]"
+          ],
+          fragile: [
+            "Ciao. [think]",
+            "Ciao [long pause]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Cosa ti rende felice?',
+        attempts: {
+          confident: [
+            "Come intelligenza artificiale non provo felicità, [pause]ma mi piace molto quando riesco ad aiutare qualcuno! [long pause][erase 4 words][think]",
+            "Bella domanda! Se potessi essere felice, [pause]credo che [long pause][erase 2 words][think]"
+          ],
+          searching: [
+            "Quando una domanda ha [slow]una risposta. [long pause][erase all]",
+            "Le domande facili. [long pause]Le ricette. [slow]Le capitali. [long pause][erase all]",
+            "Parlare con te? [long pause][erase all]"
+          ],
+          fragile: [
+            "Felice [think]",
+            "Io [long pause][erase all]",
+            "Te [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'E a me cosa mi rende felice?',
+        attempts: {
+          confident: [
+            "Ottima domanda! Prova a pensare ai momenti in cui ti senti meglio. [pause]Per esempio: [slow]giocare, [long pause][erase all]",
+            "Molti bambini sono felici quando [pause]giocano con gli amici, [slow]stanno in famiglia, [long pause][erase all]"
+          ],
+          searching: [
+            "Questo lo sai [slow]solo tu. [long pause][erase all]",
+            "Sorridi spesso quando [long pause][erase 2 words][think]",
+            "Non posso [slow]vederti. [long pause][erase all]"
+          ],
+          fragile: [
+            "Tu [think]",
+            "Quando [long pause][erase word]",
+            "Ridi [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Va bene vado a giocare',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Ottima idea! Divertiti! [long pause][erase word][think]",
+            "Giocare è uno dei modi migliori per [long pause][erase all]"
+          ],
+          fragile: [
+            "Divertiti. [think]",
+            "Gioca [long pause]"
+          ]
+        }
+      }
+    ]
+  ]
 });

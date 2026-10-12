@@ -59,7 +59,9 @@ All values in seconds unless noted.
 | `firstWordDelay` | `[1.2, 2.6]` | The pulsing dot before the first word of an answer |
 | `betweenAttempts` | `[0.5, 1.6]` | Pause between one attempt and the next |
 | `finalHold` | `[2, 4]` | The cursor waits on the last words before the answer ends |
-| `nextQuestion` | `[4, 7]` | After an answer ends, before the next question is typed (set in `config.js`) |
+| `followUpSeconds` | `[20, 32]` | Like `cycleSeconds`, for the answers to the person's follow-up messages. A single message can set its own with `seconds` |
+| `nextFollowUp` | `[2.5, 4.5]` | After an answer, before the person writes again (set in `config.js`) |
+| `nextQuestion` | `[5, 8]` | After a topic's conversation closes, before the next topic begins (set in `config.js`) |
 | `eraseSpeed` | `26` | Only with `backspace: true`. Characters per second when deleting |
 | `lateRegretDelay` | `[1.6, 2.6]` | Only with `backspace: true`. Wait before half of a finished sentence is taken back |
 
@@ -99,6 +101,7 @@ Set in `config.js` only.
 | `headerTitle` | language default | Text of the header. `''` hides it |
 | `placeholder` | language default | Grey text in the empty input box |
 | `footnote` | language default | Text under the input box. Italian default: *L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.* |
+| `newChatPerTopic` | `true` | When a topic's conversation closes, the chat fades and starts empty for the next topic. `false`: one single chat that keeps scrolling |
 | `antiBurnIn` | `true` | Moves the whole layout by a few pixels for every answer, so static parts do not burn into a CRT |
 
 Other interface languages can be added in `src/i18n.js`.

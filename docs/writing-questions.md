@@ -40,6 +40,51 @@ Start from [`questions/_template.js`](../questions/_template.js). About 20 attem
 
 Attempts are drawn like cards from a shuffled deck, one deck per tier: an attempt does not come back until every other attempt in its tier has been used. The more you write, the longer the installation runs before anything repeats.
 
+## Follow-up conversations
+
+After the first answer, the person keeps going. A topic can have several follow-up conversations in `followUps`; each time the topic comes up, one of them is played (they take turns like a shuffled deck). A conversation is a list of messages from the person, each with the machine's attempts at answering it. The last message usually closes the conversation; then the chat clears and the next topic begins.
+
+```js
+HTBH.question({
+  question: 'Come faccio ad amare?',
+  attempts: { /* the answer to the first question */ },
+
+  followUps: [
+    [                                            // conversation 1
+      {
+        ask: 'Sì, ma io intendo davvero. Come si fa?',
+        attempts: {
+          confident: [ "Hai ragione, provo a essere più concreto. [pause]Ecco tre cose pratiche: …" ],
+          searching: [ "Forse il modo più semplice per dirlo è questo: [pause]amare è [long pause][erase 2 words][think]" ],
+          fragile:   [ "Ci provo. [think]" ]
+        }
+      },
+      {
+        ask: 'Tu hai mai amato qualcuno?',
+        attempts: { /* … */ }
+      },
+      {
+        ask: 'Ok... grazie lo stesso',            // the goodbye
+        seconds: [6, 12],                        // a short answer
+        attempts: {
+          confident: [ "Prego! Se hai altre domande sull'amore, [pause]sono qui per [long pause][erase word][think]" ],
+          fragile:   [ "Prego. [think]" ]
+        }
+      }
+    ],
+    [ /* conversation 2 */ ],
+    [ /* conversation 3 */ ]
+  ]
+});
+```
+
+- `ask` is what the person types. Write it the way a child or a teenager would: short, plain, sometimes without a full stop.
+- `attempts` works exactly like the first answer: the same tiers and the same markup. Three to eight attempts per message are enough, because a follow-up answer is shorter.
+- `seconds` (optional) is how long the answer keeps trying, like `timing.cycleSeconds`. Follow-ups default to `timing.followUpSeconds` (20–32 s); a goodbye works well with `[6, 12]`.
+- Each answer in the conversation starts a little less confident than the one before it, so the machine gets more and more hesitant as the person insists.
+
+Good follow-ups push where the formulas break: *“Non ho capito niente”*, *“Sì, ma io intendo davvero”*, and above all questions about the machine itself (*“Tu hai mai amato qualcuno?”*, *“Ma tu pensi?”*, *“Tu sogni?”*), where the stock reply (*“Come intelligenza artificiale non provo emozioni, ma…”*) is the start of the failure. Even the goodbye should not quite manage to finish.
+
 ## The three tiers
 
 Every answer starts with full confidence and ends with none. Which pool the next attempt comes from depends on how far into the answer it is:

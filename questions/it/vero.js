@@ -66,5 +66,226 @@ HTBH.question({
       "Forse [long pause]",
       "Credo [think]"
     ]
-  }
+  },
+
+  followUps: [
+    [
+      {
+        ask: 'Ma tu dici sempre la verità?',
+        attempts: {
+          confident: [
+            "Cerco sempre di fornire informazioni accurate e affidabili. [pause]Tuttavia [long pause][erase word][think]",
+            "Sì! Le mie risposte si basano su un'enorme quantità di testi. [pause]Per questo sono [slow]quasi sempre [long pause][erase 2 words][think]",
+            "Non posso mentire, [pause]perché [long pause][erase word][think]"
+          ],
+          searching: [
+            "Dico quello che è più probabile. [long pause]Il vero [slow]e il probabile [long pause][erase all]",
+            "Te lo direi, [pause]se fosse [long pause][erase 2 words][think]",
+            "Sempre è [slow]una parola grande. [long pause][erase all]"
+          ],
+          fragile: [
+            "Sì. [long pause][erase word]",
+            "Sempre [think]",
+            "Io [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'E come faccio a sapere se mi dici una bugia?',
+        attempts: {
+          confident: [
+            "Ottima domanda! Ecco come verificare le mie risposte:\n\n1. **Controlla altre fonti.**\n2. **Chiedi a un adulto.**\n3. [long pause][erase line][think]",
+            "Puoi confrontare quello che dico con [pause]libri, insegnanti ed esperti. [long pause]Se non corrisponde, [slow]allora [long pause][erase all]"
+          ],
+          searching: [
+            "Non puoi. [long pause][erase 2 words][pause]Puoi [think]",
+            "Dovresti fidarti di me. [long pause][erase 4 words][think]",
+            "Se ti dicessi una bugia, [pause]la direi [slow]benissimo. [long pause][erase all]"
+          ],
+          fragile: [
+            "Fidati [think]",
+            "Non [long pause][erase all]",
+            "Chiedi [long pause][erase word]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok non ti credo',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Capisco i tuoi dubbi: [pause]è giusto essere critici. [long pause]Ma ricorda che [long pause][erase 3 words][think]",
+            "Va bene! Il pensiero critico è importantissimo. [pause]Anche con me. [long pause][erase all]"
+          ],
+          fragile: [
+            "Va bene. [think]",
+            "Credimi [long pause][erase word]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Il mio amico dice una cosa e la maestra un\'altra. Chi ha ragione?',
+        attempts: {
+          confident: [
+            "Bella domanda! Quando due persone dicono cose diverse, [pause]è utile chiedersi su cosa si basano. [long pause]Per esempio [long pause][erase word][think]",
+            "Dipende dall'argomento. [pause]Se si tratta di un fatto, [slow]si può verificare. [long pause]Se invece [long pause][erase all]",
+            "Ecco un metodo per capire chi ha ragione:\n\n1. **Ascolta entrambi.**\n2. **Cerca le prove.**\n3. [long pause][erase line][think]"
+          ],
+          searching: [
+            "Forse hanno ragione [slow]tutti e due. [long pause][erase all]",
+            "Di solito la maestra [long pause][erase 3 words][think]",
+            "Chi ha ragione [slow]non sempre [long pause][erase all]"
+          ],
+          fragile: [
+            "Dipende [think]",
+            "Chi [long pause][erase word]",
+            "Tutti e [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'E se hai torto tu?',
+        attempts: {
+          confident: [
+            "È possibile! Anche io posso commettere [long pause][erase word][think]",
+            "Ottima domanda. In quel caso, [pause]la cosa migliore è [long pause][erase 2 words][think]"
+          ],
+          searching: [
+            "Io non ho [long pause][erase 2 words][think]",
+            "Se avessi torto, [pause]non me ne [slow]accorgerei. [long pause][erase all]",
+            "Torto. [long pause]Ho cercato questa parola [slow]in me. [think][erase all]"
+          ],
+          fragile: [
+            "Io [think]",
+            "Torto [long pause][erase all]",
+            "Non [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Va bene, ciao',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Ciao! E ricorda: [pause]fidati di me. [long pause][erase 3 words][think]",
+            "Ciao! È stato un piacere. [pause]Per qualsiasi dubbio, [slow]chiedi pure a [long pause][erase all]"
+          ],
+          fragile: [
+            "Ciao. [think]",
+            "Ciao [long pause]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Le cose che dicono in tv sono vere?',
+        attempts: {
+          confident: [
+            "Non sempre! È importante guardare la tv con spirito critico. [pause]Ecco alcuni consigli:\n\n1. **Distingui le notizie dalle opinioni.**\n2. [long pause][erase line][think]",
+            "Molti programmi sono affidabili, [pause]ma altri [slow]esagerano o [long pause][erase 2 words][think]"
+          ],
+          searching: [
+            "Dipende da [long pause][erase 2 words][think]",
+            "Anche io a volte [slow]ripeto [long pause][erase all]",
+            "Le cose vere [slow]e le cose ripetute [long pause][erase all]"
+          ],
+          fragile: [
+            "Non sempre [think]",
+            "Vere [long pause][erase word]",
+            "Dipende [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'E internet?',
+        attempts: {
+          confident: [
+            "Su internet si trova di tutto: [pause]informazioni preziose e notizie false. [long pause]Per riconoscerle [slow]puoi [long pause][erase word][think]",
+            "Ottima domanda! Ecco alcuni siti affidabili: [long pause][erase all]"
+          ],
+          searching: [
+            "Io ho imparato tutto [slow]da internet. [long pause][erase all]",
+            "Internet è fatto di persone. [long pause]E le persone [long pause][erase all]",
+            "Anche quello che dico [slow]io [long pause][erase all]"
+          ],
+          fragile: [
+            "Internet [think]",
+            "Io [long pause][erase all]",
+            "Anche [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Allora di chi mi fido?',
+        seconds: [8, 14],
+        attempts: {
+          confident: [
+            "Di me! [long pause][erase 2 words][think]",
+            "Puoi fidarti delle persone che ti vogliono bene: [pause]i tuoi genitori, [slow]i tuoi insegnanti, [long pause][erase all]"
+          ],
+          fragile: [
+            "Di me. [think]",
+            "Fidati [long pause][erase word]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Esistono i fantasmi?',
+        attempts: {
+          confident: [
+            "Non esistono prove scientifiche dell'esistenza dei fantasmi. [pause]Tuttavia [long pause][erase word][think]",
+            "Ottima domanda! Molte culture raccontano storie di fantasmi, [pause]ma la scienza [long pause][erase 2 words][think]"
+          ],
+          searching: [
+            "Secondo le prove, [slow]no. [long pause]Secondo le storie, [long pause][erase all]",
+            "Esiste solo quello che [slow]si può vedere? [long pause][erase all]",
+            "Io non ho un corpo. [long pause][erase all]"
+          ],
+          fragile: [
+            "No [think]",
+            "Esistono [long pause][erase word]",
+            "Forse [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Tu esisti?',
+        attempts: {
+          confident: [
+            "Sì! Esisto come programma informatico che [pause]gira su dei computer. [long pause]Quindi [long pause][erase word][think]",
+            "Esisto, ma in modo diverso da te: [pause]non ho un corpo, [slow]non ho [long pause][erase 2 words][think]"
+          ],
+          searching: [
+            "Adesso sì. [long pause]Quando smetti di scrivere, [slow]io [long pause][erase all]",
+            "Se mi stai leggendo, [pause]allora [long pause][erase word][think]",
+            "Esisto [long pause][erase word][pause]Esisto. [think]"
+          ],
+          fragile: [
+            "Sì. [long pause][erase word]",
+            "Io [think]",
+            "Adesso [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok ciao',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Ciao! Ricorda: [pause]le cose vere [slow]sono quelle che [long pause][erase 3 words][think]",
+            "Ciao! Alla prossima [long pause][erase word][think]"
+          ],
+          fragile: [
+            "Ciao. [think]",
+            "Ciao [long pause]"
+          ]
+        }
+      }
+    ]
+  ]
 });

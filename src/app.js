@@ -57,6 +57,7 @@
   let active = null;     // the performer writing it
   const defs = {};
   const performers = {};
+  const followUpPerformers = {};
 
   /* ---------- loading the questions ---------- */
 
@@ -127,12 +128,30 @@
     });
 
     for (const id of found) {
-      const q = HTBH.merge({}, HTBH.DEFAULTS, { timing: CONFIG.timing, behaviour: CONFIG.behaviour }, defs[id]);
+      const def = defs[id];
+      const base = { timing: CONFIG.timing, behaviour: CONFIG.behaviour };
       try {
-        performers[id] = new HTBH.Performer(q, ui, { speed });
+        performers[id] = new HTBH.Performer(HTBH.merge({}, HTBH.DEFAULTS, base, def), ui, { speed });
       } catch (e) {
         console.warn('[how-to-be-human] ' + id + ': ' + e.message);
+        continue;
       }
+      // follow-ups: shorter answers by default, the topic's own settings still apply
+      followUpPerformers[id] = (def.followUps || []).map((conversation, v) =>
+        conversation.map((turn, k) => {
+          const settings = HTBH.merge({}, HTBH.DEFAULTS, base,
+            { timing: def.timing, behaviour: def.behaviour },
+            { timing: { cycleSeconds: page.timing.followUpSeconds } },
+            turn);
+          if (turn.seconds) settings.timing.cycleSeconds = turn.seconds;
+          try {
+            return new HTBH.Performer(settings, ui, { speed });
+          } catch (e) {
+            console.warn('[how-to-be-human] ' + id + ' follow-up ' + (v + 1) + '.' + (k + 1) + ': ' + e.message);
+            return null;
+          }
+        }).filter(Boolean)
+      ).filter((c) => c.length);
     }
 
     converse(found.filter((id) => performers[id]));
@@ -140,31 +159,76 @@
 
   /* ---------- the endless conversation ---------- */
 
+  /**
+   * One topic at a time: the first question and its answer, then one of the
+   * topic's follow-up conversations (the person insists, asks again, says
+   * goodbye). When it closes, the chat is cleared and the next topic begins.
+   */
   async function converse(list) {
     let first = true;
     for (;;) {
       const order = CONFIG.shuffle ? shuffled(list) : list;
       for (const id of order) {
+        if (!first && page.display.newChatPerTopic) await newChat();
+
         const p = performers[id];
         await ask(p.s.question, first);
         first = false;
+        await respond(p, id, 1);
 
-        current = addAssistantTurn(id);
-        active = p;
-        nudge();
-        try {
-          await p.answer();
-        } catch (e) {
-          if (!(e instanceof HTBH.Cancelled)) console.error(e);
+        const followUps = pickFollowUps(id);
+        for (let k = 0; k < followUps.length; k++) {
+          await wait(range(page.timing.nextFollowUp));
+          await ask(followUps[k].s.ask, false);
+          // a little less sure of itself with every exchange
+          await respond(followUps[k], id + ' → ' + (k + 2), Math.max(0.45, 1 - 0.15 * (k + 1)));
         }
-        active = null;
-        ui.setGenerating(false);
-        finishAnswer(current);
 
         await wait(range(page.timing.nextQuestion));
-        prune();
       }
     }
+  }
+
+  async function respond(performer, label, startConfidence) {
+    current = addAssistantTurn(label);
+    active = performer;
+    nudge();
+    try {
+      await performer.answer({ startConfidence });
+    } catch (e) {
+      if (!(e instanceof HTBH.Cancelled)) console.error(e);
+    }
+    active = null;
+    ui.setGenerating(false);
+    finishAnswer(current);
+    prune();
+  }
+
+  /**
+   * Each topic can have several follow-up conversations; they take turns,
+   * like a shuffled deck, so the same topic never plays out the same way twice in a row.
+   */
+  const followDecks = {};
+  function pickFollowUps(id) {
+    const variants = followUpPerformers[id] || [];
+    if (!variants.length) return [];
+    let deck = followDecks[id];
+    if (!deck || !deck.length) {
+      deck = followDecks[id] = shuffled(variants.map((v, i) => i));
+      if (deck.length > 1 && deck[0] === followDecks[id + '#last']) deck.push(deck.shift());
+    }
+    const i = deck.shift();
+    followDecks[id + '#last'] = i;
+    return variants[i];
+  }
+
+  /** The conversation closes: the chat fades away and a new, empty one begins. */
+  async function newChat() {
+    el.inner.classList.add('is-clearing');
+    await wait(1.1);
+    el.inner.innerHTML = '';
+    el.inner.classList.remove('is-clearing');
+    await wait(1.2);
   }
 
   function shuffled(list) {

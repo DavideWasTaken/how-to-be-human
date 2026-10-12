@@ -36,7 +36,22 @@ Under the input box, where assistants usually admit they can make mistakes, it s
 
 ## How it behaves
 
-The page is **one endless chat**. Each question is typed into the input box and sent, the answer streams in below it, the small icons appear under the finished answer, and the next question follows. The chat scrolls up like any conversation. After the last question, the first one comes back.
+The page is **one endless chat**, one topic at a time. For each topic a whole conversation plays out:
+
+```
+PERSONA   Come faccio ad amare?
+AI        Certo! Ecco una guida in cinque passi per imparare ad amare: …   (falls apart)
+PERSONA   Non ho capito niente
+AI        Nessun problema! Ecco la versione breve: Ascolta. Rispetta. …  È che
+PERSONA   Ma la mamma come fa a volermi bene?
+AI        Non ha bisogno di istruzioni. Lo fa e basta.  Lo fa.  Lei
+PERSONA   Va bene ciao
+AI        A presto! Ricorda che
+```
+
+Every message from the person is typed into the input box and sent; every answer streams in below it, and the small icons appear under it when it ends. The person insists, asks the machine about itself, and finally says goodbye, and even the goodbye cannot be finished. Then the chat clears (*Nuova chat*) and the next topic begins. After the last topic, the first one comes back.
+
+Each topic has **four different conversations** that take turns, so the same topic never plays out the same way twice in a row. With every exchange the machine starts its answer a little less sure of itself. A topic lasts about three minutes; all seven, about twenty.
 
 Every answer follows the same arc, put together differently each time from a pool of hand-written attempts:
 
@@ -44,7 +59,7 @@ Every answer follows the same arc, put together differently each time from a poo
 confidence   ██████████████▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒░░░░░░
 attempts     confident ──→ searching ──→ fragile ──→ closing
 typing       streams fluently ──→ slows down ──→ letter by letter, long silences
-then         the answer stops · the icons appear · the next question is asked
+then         the answer stops · the icons appear · the person writes again
 ```
 
 - **Confident** attempts use the voice of an assistant at its best: lists, bold headings, *“In generale…”*.
@@ -54,7 +69,7 @@ then         the answer stops · the icons appear · the next question is asked
 
 On top of what is written, the engine adds small irregularities that are different every time: attempts that stop after a random word, hesitations before words, long silences with only the cursor breathing. Where an attempt changes its mind, the sentence is left unfinished and the thought starts again in a new paragraph.
 
-Each question has 45–60 attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used. The conversation can run for hours without repeating itself.
+Each first question has 45–60 attempts, and every follow-up its own smaller set, all drawn like cards from a shuffled deck: none comes back until all the others in its group have been used. The installation can run for hours without repeating itself.
 
 ### Sound
 
@@ -90,7 +105,7 @@ conversation: {
 | Come faccio a non avere paura? | How do I stop being afraid? |
 | Come faccio a sognare? | How do I dream? |
 
-Remove a question from the list, change the order, or set `shuffle: true` for a different order every round.
+Remove a topic from the list, change the order, or set `shuffle: true` for a different order every round. The Italian topics each come with four follow-up conversations; the English ones have the first question and answer only, for now.
 
 ## Try it
 
@@ -133,7 +148,8 @@ Hidden keys, for setup only: **N** or **→** ends the current answer and moves 
    });
    ```
 
-3. Add `'it/perdonare'` to the conversation in `config.js`
+3. Optionally, add `followUps`: the conversations that continue after the first answer (what the person writes next, and how the machine tries to answer)
+4. Add `'it/perdonare'` to the conversation in `config.js`
 
 The full markup and tips on writing attempts that fail gracefully: **[docs/writing-questions.md](docs/writing-questions.md)**. Every setting: **[docs/configuration.md](docs/configuration.md)**.
 
@@ -176,6 +192,7 @@ pi/
   install.sh          Raspberry Pi kiosk setup
   kiosk.sh            launches the browser fullscreen
 tools/simulate.js     answers a question on a virtual clock and prints statistics
+tools/check.js        checks every topic and its follow-up conversations
 docs/                 guides
 ```
 

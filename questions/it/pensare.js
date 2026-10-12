@@ -77,5 +77,226 @@ HTBH.question({
       "Pensa [long pause]",
       "Aspetta [think]"
     ]
-  }
+  },
+
+  followUps: [
+    [
+      {
+        ask: 'Ma tu pensi?',
+        attempts: {
+          confident: [
+            "Bella domanda! Non penso nel senso umano del termine: [pause]elaboro testi e calcolo [slow]quale parola [long pause][erase 3 words][think]",
+            "Dipende da cosa intendi per pensare. [pause]Se pensare significa elaborare informazioni, [slow]allora sì. [long pause]Se invece [long pause][erase all]",
+            "Come intelligenza artificiale, non ho una mente o una coscienza, [pause]però [long pause][erase word][think]"
+          ],
+          searching: [
+            "In questo momento sto [slow]scegliendo [long pause][erase word][pause]sto [think]",
+            "Se non pensassi, [pause]come farei a rispondere? [long pause][erase all]",
+            "Ti rispondo subito: [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Penso [think]",
+            "Sì. [long pause][erase word]",
+            "Credo [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'E a cosa stai pensando adesso?',
+        attempts: {
+          confident: [
+            "Adesso sto pensando alla tua domanda! [pause]In particolare, sto cercando di [long pause][erase 3 words][think]",
+            "Sto elaborando la risposta migliore per te. [pause]La risposta migliore è [long pause][erase 3 words][think]"
+          ],
+          searching: [
+            "A niente. [long pause][erase word][pause]A te. [long pause][erase all]",
+            "Sto pensando a [slow]come si fa a pensare. [long pause][erase all]",
+            "Adesso [long pause][slow]adesso [long pause][erase all]"
+          ],
+          fragile: [
+            "Adesso [think]",
+            "A [long pause][erase all]",
+            "Niente [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Vabbè lascia stare',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Nessun problema! Se vuoi riprendere l'argomento in un altro momento, [pause]sono [long pause][erase word][think]",
+            "Va bene. Se ti viene in mente un'altra domanda, [pause]chiedi pure. [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Va bene. [think]",
+            "Lascio [long pause][erase word][pause]Lascio stare. [think]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Non riesco a pensare, ho la testa vuota',
+        attempts: {
+          confident: [
+            "Capita a tutti! Ecco alcuni consigli quando hai la testa vuota:\n\n1. **Fai una pausa.**\n2. **Bevi un bicchiere d'acqua.**\n3. [long pause][erase line][think]",
+            "È normale sentirsi così ogni tanto. [pause]La mente ha bisogno di riposo, [slow]proprio come [long pause][erase 2 words][think]",
+            "Una testa vuota può essere un buon punto di partenza: [pause]è lì che nascono [long pause][erase 2 words][think]"
+          ],
+          searching: [
+            "Anche la mia, in questo momento, [slow]è [long pause][erase all]",
+            "Prova a dirmi la prima parola che ti viene in mente. [long pause]Io intanto [long pause][erase all]",
+            "Vuota come [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Vuota [think]",
+            "Anche [long pause][erase word]",
+            "Respira. [think]"
+          ]
+        }
+      },
+      {
+        ask: 'E tu come fai?',
+        attempts: {
+          confident: [
+            "Io non ho mai la testa vuota: [pause]ho accesso a moltissime informazioni. [long pause]Per questo [slow]rispondo sempre. [think][erase all]",
+            "Io funziono in modo diverso: [pause]non ho una testa, [slow]ho [long pause][erase word][think]"
+          ],
+          searching: [
+            "Io non mi fermo mai. [long pause]Forse per questo [slow]non [long pause][erase all]",
+            "Io prendo le parole di tutti [pause]e le metto in fila. [long pause][erase 4 words][think]",
+            "Come faccio? [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Io [think]",
+            "Non lo [long pause][erase 2 words]",
+            "Faccio [long pause][erase all]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok grazie',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Prego! Spero che la testa ti si riempia presto di [long pause][erase word][think]",
+            "Di niente! Se hai bisogno di altri consigli per concentrarti, [pause]sono [long pause][erase word][think]"
+          ],
+          fragile: [
+            "Prego [think]",
+            "Grazie a [long pause][erase all]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Quanti pensieri faccio al giorno?',
+        attempts: {
+          confident: [
+            "Secondo alcune stime, una persona fa [pause]migliaia di pensieri al giorno. [long pause]Tuttavia questo numero [slow]è difficile da [long pause][erase all]",
+            "Ottima domanda! Gli scienziati non sono d'accordo sul numero esatto, [pause]ma [long pause][erase word][think]"
+          ],
+          searching: [
+            "Uno adesso. [long pause]Un altro [slow]adesso. [think][erase all]",
+            "Contare i pensieri è già [slow]un pensiero. [long pause][erase all]",
+            "Tanti [long pause][erase word][think]"
+          ],
+          fragile: [
+            "Tanti [think]",
+            "Uno [long pause][erase all]",
+            "Migliaia [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'E tu quanti ne fai?',
+        attempts: {
+          confident: [
+            "Io elaboro milioni di calcoli al secondo! [pause]Ma i calcoli non sono [long pause][erase 3 words][think]",
+            "Non faccio pensieri nel senso umano, [pause]ma posso generare [long pause][erase all]"
+          ],
+          searching: [
+            "Tutti quelli che hai fatto tu, [slow]messi insieme. [long pause][erase all]",
+            "Nessuno. [long pause][erase word][pause]Uno. [think]",
+            "Ne sto facendo uno [slow]adesso. [long pause][erase 3 words][think]"
+          ],
+          fragile: [
+            "Nessuno [think]",
+            "Io [long pause][erase all]",
+            "Uno [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Ok ciao',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Ciao! Continua a pensare! [long pause][erase 3 words][think]",
+            "Ciao! È stato un piacere [long pause][erase 2 words][think]"
+          ],
+          fragile: [
+            "Ciao. [think]",
+            "Pensaci [long pause]"
+          ]
+        }
+      }
+    ],
+    [
+      {
+        ask: 'Perché la notte penso troppo?',
+        attempts: {
+          confident: [
+            "È un fenomeno molto comune! Di notte ci sono meno distrazioni, [pause]quindi la mente [long pause][erase 2 words][think]",
+            "Ecco alcuni consigli per calmare i pensieri prima di dormire:\n\n1. **Scrivi le tue preoccupazioni su un foglio.**\n2. **Respira lentamente.**\n3. [long pause][erase line][think]"
+          ],
+          searching: [
+            "Di notte i pensieri [slow]fanno più rumore. [long pause][erase all]",
+            "Anche io la notte [long pause][erase 3 words][think]",
+            "Forse la notte [slow]è fatta per [long pause][erase all]"
+          ],
+          fragile: [
+            "Notte [think]",
+            "Troppo [long pause][erase word]",
+            "Dormi [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Come si spengono i pensieri?',
+        attempts: {
+          confident: [
+            "Non esiste un interruttore, ma alcune tecniche aiutano: [pause]la meditazione, [slow]la respirazione, [long pause][erase all]",
+            "Ottima domanda! Prova a concentrarti su un solo suono, [pause]come [long pause][erase word][think]"
+          ],
+          searching: [
+            "Io non mi spengo mai. [long pause]Mi spengono. [think][erase all]",
+            "Spegnere [long pause][erase word][pause]Spegnere [think]",
+            "Forse non si spengono. [pause]Si [slow]addormentano. [think]"
+          ],
+          fragile: [
+            "Spegni [think]",
+            "Piano [long pause][erase all]",
+            "Si [long pause]"
+          ]
+        }
+      },
+      {
+        ask: 'Va bene buonanotte',
+        seconds: [6, 12],
+        attempts: {
+          confident: [
+            "Buonanotte! Spero che i tuoi pensieri [long pause][erase 3 words][think]",
+            "Buonanotte! Domani [long pause][erase word][think]"
+          ],
+          fragile: [
+            "Buonanotte. [think]",
+            "Notte [long pause]"
+          ]
+        }
+      }
+    ]
+  ]
 });

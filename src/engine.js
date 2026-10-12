@@ -25,7 +25,9 @@
       betweenAttempts: [0.5, 1.6],
       lateRegretDelay: [1.6, 2.6],// finishes a sentence, waits, then erases half of it
       finalHold: [2, 4],          // the cursor waits on the last words before the answer ends
-      nextQuestion: [4, 7]        // after an answer ends, before the next question is typed
+      followUpSeconds: [20, 32],  // like cycleSeconds, for answers to the person's follow-ups
+      nextFollowUp: [2.5, 4.5],   // after an answer, before the person writes again
+      nextQuestion: [5, 8]        // after a conversation closes, before the next topic begins
     },
     behaviour: {
       backspace: false,     // false: writing only goes forward, like a chat assistant.
@@ -54,7 +56,8 @@
       headerTitle: null,    // null = default for the language, '' = hidden
       placeholder: null,
       footnote: null,
-      antiBurnIn: true      // shifts the layout by a few pixels every cycle
+      newChatPerTopic: true, // when a topic's conversation closes, the chat is cleared
+      antiBurnIn: true      // shifts the layout by a few pixels for every answer
     },
     sound: {
       enabled: true,        // a soft key click for every character written or erased
@@ -172,6 +175,7 @@
       this.lastPicked = null;
       this.cycleStart = performance.now();
       this.target = 1;
+      this.startConfidence = 1;
 
       this.pools = {};
       for (const tier of TIERS.concat('closing')) {
@@ -191,7 +195,7 @@
 
     confidence() {
       const t = clamp01(this.elapsed() / this.target);
-      return Math.pow(1 - t, this.b.confidenceCurve);
+      return this.startConfidence * Math.pow(1 - t, this.b.confidenceCurve);
     }
 
     sleep(seconds) {
@@ -205,7 +209,7 @@
       });
     }
 
-    /** Interrupts whatever is happening; the main loop starts a fresh cycle. */
+    /** Interrupts whatever is happening; the answer ends at once. */
     skip() {
       if (!this.pending) return;
       clearTimeout(this.pending.timer);
@@ -219,8 +223,11 @@
     /**
      * Writes one complete answer into whatever element the ui currently
      * targets: confident at first, then searching, then fragile, then it stops.
+     * Later in a conversation it can start already less sure of itself
+     * (`startConfidence` below 1).
      */
-    async answer() {
+    async answer(opts) {
+      this.startConfidence = opts && opts.startConfidence != null ? clamp01(opts.startConfidence) : 1;
       this.glyphs = [];
       this.ui.render(this.glyphs);
       this.ui.cursor('idle');
