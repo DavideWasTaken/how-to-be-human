@@ -47,14 +47,25 @@
       const data = this.noise.getChannelData(0);
       for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
 
-      // browsers start audio suspended until a gesture; the Pi kiosk allows it outright
+      // browsers start audio suspended until a gesture; the Pi kiosk allows it outright.
+      // iPhones only accept some gestures (a finished tap, a click), so listen to all of them.
       const unlock = () => this.resume();
-      ['keydown', 'pointerdown', 'touchstart'].forEach((e) => global.addEventListener(e, unlock));
+      ['keydown', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'click'].forEach((e) =>
+        global.addEventListener(e, unlock, { passive: true })
+      );
       this.resume();
     }
 
     resume() {
-      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+      if (!this.ctx || this.ctx.state === 'running') return;
+      this.ctx.resume().catch(() => {});
+      // Safari unlocks audio only once something has actually played inside the gesture
+      try {
+        const silent = this.ctx.createBufferSource();
+        silent.buffer = this.ctx.createBuffer(1, 1, this.ctx.sampleRate);
+        silent.connect(this.ctx.destination);
+        silent.start(0);
+      } catch (e) { /* not ready yet: the next gesture will try again */ }
     }
 
     ready() {
