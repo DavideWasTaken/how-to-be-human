@@ -103,6 +103,10 @@
     const d = page.display;
     if (params.get('layout')) d.layout = params.get('layout');
     if (params.get('theme')) d.theme = params.get('theme');
+    if (d.theme === 'green') { // green phosphor without the falling code
+      d.theme = 'matrix';
+      d.rain = false;
+    }
     // the dark themes are made for the minimal layout: only the words, on black
     const dark = d.theme === 'matrix' || d.theme === 'dark';
     if (dark) d.layout = 'minimal';

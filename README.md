@@ -100,7 +100,7 @@ There is no sound: the question is already there when the station starts, and th
 | Green phosphor on black, a soft glow, a blinking block cursor, and the falling code of *The Matrix* very dim behind the words. The most striking on a CRT | White on black, the same terminal style without the falling code. Quieter |
 | `display: { theme: 'matrix' }` | `display: { theme: 'dark' }` |
 
-Matrix and dark always use the minimal layout. To compare without editing anything, add `?layout=minimal`, `?theme=matrix` or `?theme=dark` to the address, for example [▶ matrix](https://davidewastaken.github.io/how-to-be-human/?topic=it/chi-sono&theme=matrix). The falling code can be switched off with `display: { theme: 'matrix', rain: false }`.
+Matrix and dark always use the minimal layout. To compare without editing anything, add `?layout=minimal`, `?theme=matrix` or `?theme=dark` to the address, for example [▶ matrix](https://davidewastaken.github.io/how-to-be-human/?topic=it/chi-sono&theme=matrix). For green on black without the falling code, use `display: { theme: 'green' }` ([▶ green](https://davidewastaken.github.io/how-to-be-human/?topic=it/chi-sono&theme=green)).
 
 ## The stations
 
@@ -134,7 +134,7 @@ then visit `http://localhost:8000`.
 | `?topic=it/paura` | the station's topic |
 | `?speed=3` | everything three times faster, for previewing |
 | `?layout=minimal` | the minimal look, without editing any file |
-| `?theme=matrix` / `?theme=dark` | green on black with falling code / white on black |
+| `?theme=matrix` / `?theme=green` / `?theme=dark` | green on black with falling code / green without it / white on black |
 | `?debug` | shows which attempt is running and how much confidence is left |
 
 Options can be combined: `?topic=it/paura&speed=3`.
