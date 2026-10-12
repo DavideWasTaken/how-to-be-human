@@ -10,6 +10,8 @@
 
 **How to Be Human** is a project for [matteomandelli.com](https://matteomandelli.com)
 
+**[▶ Watch it live](https://davidewastaken.github.io/how-to-be-human/)**
+
 </div>
 
 ---
