@@ -1,18 +1,26 @@
 /*
- * How to Be Human — global configuration.
+ * How to Be Human — configuration.
  *
- * `station` is the station shown when the URL does not say otherwise
- * (index.html?station=it/amare). On the Raspberry Pi the station is set by
- * pi/station.conf or by a file on the SD card — see docs/raspberry-pi.md.
+ * The page is one endless chat. The questions below are asked one after the
+ * other, in this order; when the last one has been answered, the first one
+ * comes back. Each question lives in its own file in questions/.
  *
- * Anything in `timing`, `behaviour` or `display` here applies to every
- * station, and each station file can still override it.
+ * Anything in `timing`, `behaviour`, `display` or `sound` applies to every
+ * question; a question file can still override timing and behaviour.
+ * All options: docs/configuration.md
  */
 window.HTBH_CONFIG = {
-  station: 'it/amare',
+  language: 'it',           // which conversation below is used (index.html?lang=en to switch)
+
+  conversation: {
+    it: ['it/pensare', 'it/chi-sono', 'it/amare', 'it/felice', 'it/vero', 'it/paura', 'it/sognare'],
+    en: ['en/think', 'en/who-am-i', 'en/love', 'en/happy', 'en/true', 'en/afraid', 'en/dream']
+  },
+
+  shuffle: false,           // true: a different order every round
 
   timing: {},
-  behaviour: {},
-  display: {},     // e.g. { layout: 'minimal' }
-  sound: {}        // e.g. { volume: 0.2 } or { enabled: false }
+  behaviour: {},            // e.g. { backspace: true } to let it erase as well
+  display: {},              // e.g. { layout: 'minimal' }
+  sound: {}                 // e.g. { volume: 0.2 } or { enabled: false }
 };

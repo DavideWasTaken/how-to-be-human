@@ -3,7 +3,7 @@
  *
  * Markup reference: docs/writing-stations.md
  */
-HTBH.station({
+HTBH.question({
   language: 'en',
   question: 'How do I know who I am?',
 

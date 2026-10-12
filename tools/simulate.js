@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /*
- * Runs a station many times on a virtual clock and prints statistics:
- * how long cycles last, how many attempts they contain, which tiers appear.
+ * Answers one question many times on a virtual clock and prints statistics:
+ * how long answers last, how many attempts they contain, which tiers appear.
  * Useful when tuning timing/behaviour without watching the screen for hours.
  *
- *   node tools/simulate.js it/amare [cycles]
+ *   node tools/simulate.js it/amare [answers]
  */
 'use strict';
 
@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const stationId = process.argv[2] || 'it/amare';
+const questionId = process.argv[2] || 'it/amare';
 const cycles = parseInt(process.argv[3], 10) || 200;
 const root = path.join(__dirname, '..');
 
@@ -33,11 +33,11 @@ run('src/engine.js');
 run('config.js');
 
 let def = null;
-sandbox.HTBH.station = (d) => { def = d; };
-run('stations/' + stationId + '.js');
+sandbox.HTBH.question = sandbox.HTBH.station = (d) => { def = d; };
+run('questions/' + questionId + '.js');
 
 const cfg = sandbox.HTBH_CONFIG;
-const station = sandbox.HTBH.merge({}, sandbox.HTBH.DEFAULTS,
+const question = sandbox.HTBH.merge({}, sandbox.HTBH.DEFAULTS,
   { timing: cfg.timing, behaviour: cfg.behaviour, display: cfg.display }, def);
 
 const log = [];
@@ -47,7 +47,7 @@ const ui = {
   debug(info) { if (info) log.push(info.attempt); }
 };
 
-const p = new sandbox.HTBH.Performer(station, ui, { speed: 1 });
+const p = new sandbox.HTBH.Performer(question, ui, { speed: 1 });
 p.sleep = (s) => { clock += s * 1000; return Promise.resolve(); };
 
 (async () => {
@@ -55,7 +55,7 @@ p.sleep = (s) => { clock += s * 1000; return Promise.resolve(); };
   for (let i = 0; i < cycles; i++) {
     log.length = 0;
     const t0 = clock;
-    await p.cycle();
+    await p.answer();
     stats.push({ seconds: (clock - t0) / 1000, attempts: log.slice() });
   }
 
@@ -68,9 +68,9 @@ p.sleep = (s) => { clock += s * 1000; return Promise.resolve(); };
     tiers[t] = (tiers[t] || 0) + 1;
   }));
 
-  console.log('station        ' + stationId + '  (' + cycles + ' cycles)');
-  console.log('cycle length   avg ' + avg(secs).toFixed(1) + 's   min ' + Math.min(...secs).toFixed(1) + 's   max ' + Math.max(...secs).toFixed(1) + 's');
-  console.log('attempts/cycle avg ' + avg(counts).toFixed(1) + '   min ' + Math.min(...counts) + '   max ' + Math.max(...counts));
+  console.log('question       ' + questionId + '  (' + cycles + ' answers)');
+  console.log('answer length  avg ' + avg(secs).toFixed(1) + 's   min ' + Math.min(...secs).toFixed(1) + 's   max ' + Math.max(...secs).toFixed(1) + 's');
+  console.log('attempts/answer avg ' + avg(counts).toFixed(1) + '   min ' + Math.min(...counts) + '   max ' + Math.max(...counts));
   console.log('tiers          ' + Object.entries(tiers).map(([k, v]) => k + ' ' + v).join('   '));
-  console.log('example cycle  ' + stats[0].attempts.join(' → '));
+  console.log('example answer ' + stats[0].attempts.join(' → '));
 })();

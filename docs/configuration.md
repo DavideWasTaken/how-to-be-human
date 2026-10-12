@@ -1,28 +1,48 @@
 # Configuration
 
-Settings are layered. Each layer overrides the one before it:
+Everything is set in [`config.js`](../config.js). Settings are layered, each layer overriding the one before:
 
 1. **Defaults**, built into `src/engine.js`
-2. **`config.js`**: applies to every station on this machine
-3. **The station file**: applies to that station only
+2. **`config.js`**: applies to the whole page and every question
+3. **A question file**: can override `timing` and `behaviour` for that question only
 
-Write only what you want to change. For example, to make one station slower and larger:
+Write only what you want to change. Values written as `[a, b]` are ranges: a random value between `a` and `b` is picked each time.
+
+## `config.js`
 
 ```js
-HTBH.station({
+window.HTBH_CONFIG = {
   language: 'it',
+
+  conversation: {
+    it: ['it/pensare', 'it/chi-sono', 'it/amare', 'it/felice', 'it/vero', 'it/paura', 'it/sognare'],
+    en: ['en/think', 'en/who-am-i', 'en/love', 'en/happy', 'en/true', 'en/afraid', 'en/dream']
+  },
+
+  shuffle: false,
+
+  timing: {},
+  behaviour: {},
+  display: {},
+  sound: {}
+};
+```
+
+| Setting | Meaning |
+|---|---|
+| `language` | Which conversation is played, and the language of the interface text (header, input placeholder, footnote). `?lang=en` in the address overrides it |
+| `conversation` | For each language, the questions in the order they are asked. Each name is a file in `questions/` without `.js`. After the last one, it starts again from the first |
+| `shuffle` | `true`: a new random order every round |
+
+A question file can override `timing` and `behaviour` for itself:
+
+```js
+HTBH.question({
   question: 'Come faccio ad amare?',
-  timing:  { typingSpeed: 30, cycleSeconds: [40, 60] },
-  display: { textSize: 1.2 },
+  timing: { typingSpeed: 30, cycleSeconds: [40, 60] },
   attempts: { /* … */ }
 });
 ```
-
-Values written as `[a, b]` are ranges: a random value between `a` and `b` is picked each time.
-
-## `language`
-
-`'it'`, `'en'`, `'fr'`, `'es'` or `'de'`. Sets the interface text (header, input placeholder, footnote) and the page language. Other languages can be added in `src/i18n.js`, or any single string can be overridden in `display`.
 
 ## `timing`
 
@@ -30,18 +50,18 @@ All values in seconds unless noted.
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `cycleSeconds` | `[30, 50]` | How long it keeps starting new attempts. The ending (last attempt, closing, erase, question alone) adds roughly 10–20 s, so a full loop lasts about 45–80 s |
+| `cycleSeconds` | `[30, 50]` | How long an answer keeps starting new attempts. The last attempt and the closing words add a little, so an answer lasts about 40–75 s |
 | `typingSpeed` | `45` | Characters per second at full confidence |
 | `minTypingSpeed` | `10` | Characters per second when confidence has run out |
-| `eraseSpeed` | `26` | Characters per second when backspacing. Long erases speed up like a held key |
 | `shortPause` | `0.7` | Length of `[pause]` |
 | `longPause` | `2.0` | Length of `[long pause]` |
 | `thinkPause` | `[4, 5.5]` | Length of `[think]` and of long silences between attempts |
-| `firstWordDelay` | `[1.2, 2.6]` | The pulsing dot before the first word of a cycle |
+| `firstWordDelay` | `[1.2, 2.6]` | The pulsing dot before the first word of an answer |
 | `betweenAttempts` | `[0.5, 1.6]` | Pause between one attempt and the next |
-| `lateRegretDelay` | `[1.6, 2.6]` | Wait before half of a finished sentence is taken back |
-| `finalHold` | `[2, 4]` | Last moment before the whole answer is erased |
-| `questionHold` | `[3, 5]` | Only the question on screen, before the next cycle |
+| `finalHold` | `[2, 4]` | The cursor waits on the last words before the answer ends |
+| `nextQuestion` | `[4, 7]` | After an answer ends, before the next question is typed (set in `config.js`) |
+| `eraseSpeed` | `26` | Only with `backspace: true`. Characters per second when deleting |
+| `lateRegretDelay` | `[1.6, 2.6]` | Only with `backspace: true`. Wait before half of a finished sentence is taken back |
 
 ## `behaviour`
 
@@ -49,22 +69,25 @@ Chances are numbers from `0` (never) to `1` (always). Most of them grow as confi
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `eraseAttempt` | `0.6` | When an attempt ends on its own, chance it is erased completely |
-| `erasePartial` | `0.2` | …chance half of it is taken back instead. Whatever is left is the chance it stays on screen |
-| `abortChance` | `0.25` | Chance an attempt stops at a random point and is erased |
+| `backspace` | `false` | `false`: the writing only goes forward, like a chat assistant; changes of mind leave the sentence unfinished and start a new paragraph. `true`: it also deletes, retypes and takes sentences back |
+| `abortChance` | `0.25` | Chance an attempt stops after a random word |
 | `hesitation` | `0.08` | Chance of a small pause before each word |
-| `retypeWord` | `0.035` | Chance a word is erased and typed again identical |
 | `longThink` | `0.18` | Chance of a long silence between attempts |
 | `streaming` | `true` | While confident, text arrives in chunks like a language model. `false` = always letter by letter |
 | `confidenceCurve` | `1` | Shape of the confidence drop. `2` loses it early, `0.5` holds on until late |
-| `maxKeptChars` | `420` | When the text kept on screen grows past this, paragraphs are pulled back |
-| `finalErase` | `'backspace'` | How the answer disappears at the end: `'backspace'` (accelerating), `'fade'` or `'instant'` |
+| `eraseAttempt` | `0.6` | Only with `backspace: true`. When an attempt ends, chance it is erased completely |
+| `erasePartial` | `0.2` | Only with `backspace: true`. …chance half of it is taken back instead |
+| `retypeWord` | `0.035` | Only with `backspace: true`. Chance a word is erased and typed again identical |
+| `maxKeptChars` | `420` | Only with `backspace: true`. When the text grows past this, paragraphs are pulled back |
+| `finalErase` | `'backspace'` | Only with `backspace: true`. How the answer disappears at the end: `'backspace'`, `'fade'` or `'instant'` |
 
 ## `display`
 
+Set in `config.js` only.
+
 | Setting | Default | Meaning |
 |---|---|---|
-| `layout` | `'chat'` | `'chat'`: a familiar AI assistant interface. `'minimal'`: only the question and the answer, large, nothing else on screen |
+| `layout` | `'chat'` | `'chat'`: a familiar AI assistant interface. `'minimal'`: only the questions and the answers, large, nothing else on screen |
 | `font` | automatic | `'sans'` or `'serif'`. By default sans for `chat`, serif for `minimal` |
 | `textSize` | `1` | Text scale. `1.2` is 20% larger. The base size already adapts to the screen resolution (and `minimal` is already 1.5× larger) |
 | `overscan` | `4` | Empty margin around everything, in % of the screen. Increase it if a CRT cuts off the edges |
@@ -72,33 +95,19 @@ Chances are numbers from `0` (never) to `1` (always). Most of them grow as confi
 | `cursor` | automatic | `'dot'` (round, breathing), `'bar'` or `'block'` (both blinking). By default dot for `chat`, bar for `minimal` |
 | `showHeader` | `true` | The small title at the top left (chat layout) |
 | `showComposer` | `true` | The input box at the bottom (chat layout) |
-| `showFootnote` | `true` | The small line of text under the input box (chat layout) |
+| `showFootnote` | `true` | The line of text under the input box (chat layout) |
 | `headerTitle` | language default | Text of the header. `''` hides it |
 | `placeholder` | language default | Grey text in the empty input box |
-| `footnote` | language default | Text under the input box. `''` hides it |
-| `introTyping` | `true` | When the machine starts, the question is typed (into the input box in `chat`, in place in `minimal`), once |
-| `antiBurnIn` | `true` | Moves the whole layout by a few pixels every cycle, so static parts do not burn into a CRT |
+| `footnote` | language default | Text under the input box. Italian default: *L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.* |
+| `antiBurnIn` | `true` | Moves the whole layout by a few pixels for every answer, so static parts do not burn into a CRT |
+
+Other interface languages can be added in `src/i18n.js`.
 
 ## `sound`
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `enabled` | `true` | A soft keyboard click for every character written, and a backspace for every character erased. Synthesised, no audio files |
+| `enabled` | `true` | A soft keyboard click for every character that appears (and, with `backspace: true`, for every character deleted). Synthesised, no audio files |
 | `volume` | `0.35` | From `0` to `1` |
 
-Add `&mute` to the URL to silence it while previewing. Desktop browsers start the sound only after a click or a key press on the page; the Raspberry Pi kiosk plays it from the start.
-
-## `config.js`
-
-```js
-window.HTBH_CONFIG = {
-  station: 'it/amare',   // shown when the URL has no ?station=
-
-  timing: {},            // applied to every station
-  behaviour: {},
-  display: {},
-  sound: {}
-};
-```
-
-On the Raspberry Pi, the station is normally chosen with `how-to-be-human.txt` on the SD card or `pi/station.conf`; see [raspberry-pi.md](raspberry-pi.md).
+Add `?mute` to the address to silence it while previewing. Desktop browsers start the sound only after a click or a key press on the page; the Raspberry Pi kiosk plays it from the start.

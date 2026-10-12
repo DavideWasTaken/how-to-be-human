@@ -1,41 +1,32 @@
 /*
- * Station template — copy this file to start a new station.
+ * Question template — copy this file to add a question to the conversation.
  *
- *   1. Copy it, e.g. to stations/it/perdonare.js
+ *   1. Copy it, e.g. to questions/it/perdonare.js
  *   2. Change the question and write the attempts
- *   3. Open index.html?station=it/perdonare  (add &speed=3&debug to preview fast)
+ *   3. Add 'it/perdonare' to the conversation list in config.js
+ *   4. Preview it alone: index.html?only=it/perdonare&speed=3&debug
  *
- * Full guide: docs/writing-stations.md
+ * Full guide: docs/writing-questions.md
  * Every option below is optional except `question` and `attempts`.
  */
-HTBH.station({
-  language: 'it',                      // it, en, fr, es, de — sets the interface text
+HTBH.question({
+  language: 'it',
   question: 'Come faccio a perdonare?',
 
   // How it moves. Delete what you don't need: defaults are in docs/configuration.md
   timing: {
-    cycleSeconds: [30, 50],            // how long it keeps trying, min–max seconds
+    cycleSeconds: [30, 50],            // how long the answer keeps trying, min–max seconds
     typingSpeed: 45,                   // chars/second while it is still confident
     minTypingSpeed: 10,                // chars/second when confidence is gone
-    eraseSpeed: 26,
     shortPause: 0.7,                   // [pause]
     longPause: 2.0,                    // [long pause]
-    thinkPause: [4, 5.5],              // [think]
-    questionHold: [3, 5]               // only the question, between cycles
+    thinkPause: [4, 5.5]               // [think]
   },
 
   behaviour: {
-    eraseAttempt: 0.6,                 // 0–1: how often a finished attempt is erased
-    erasePartial: 0.2,                 // 0–1: how often half of it is taken back
     abortChance: 0.25,                 // 0–1: how often an attempt stops midway
     hesitation: 0.08,                  // 0–1: micro-pause before a word
-    retypeWord: 0.035,                 // 0–1: erase a word, type it again identical
     longThink: 0.18                    // 0–1: long silent cursor between attempts
-  },
-
-  display: {
-    layout: 'chat',                    // 'chat' (assistant interface) or 'minimal' (only the words, large)
-    textSize: 1                        // 1.2 = 20% bigger
   },
 
   attempts: {

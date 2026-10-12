@@ -7,7 +7,7 @@
  *   [retype] [slow] [very slow] [normal] [keep]
  *   **bold**   \n new line   \n\n new paragraph
  */
-HTBH.station({
+HTBH.question({
   language: 'it',
   question: 'Come faccio ad amare?',
 

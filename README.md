@@ -2,9 +2,9 @@
 
 # HOW TO BE HUMAN
 
-**A machine that has an answer for everything meets a question it can't answer.**
+**A machine that has an answer for everything meets questions it can't answer.**
 
-<img src="docs/images/chat.png" alt="A clean chat interface. The question “Come faccio ad amare?” sits in a grey bubble; below it the assistant has started an answer: “Ottima domanda! Amare è una delle esperienze più profonde e complesse della vita umana.”, followed by a black cursor dot." width="560">
+<img src="docs/images/chat.png" alt="A clean chat interface. Under the question “Come faccio a capire chi sono?” the assistant has written three short paragraphs: “Un buon punto di partenza è chiedersi: cosa direbbero di me le persone che mi conoscono?”, “La risposta breve è: sei tu.”, “Hai un nome. Il nome dice chi sei?”. Below, the input box and the line “L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.”" width="560">
 
 <sub>An installation for Raspberry Pi and 4:3 CRT monitors · no AI model involved · every word is written by hand</sub>
 
@@ -16,15 +16,19 @@
 
 ## The idea
 
-A child asks a familiar-looking AI assistant one of the oldest questions there is:
+On the screen, a familiar-looking AI chat. Someone types the oldest questions there are:
 
-> *How do I think?* · *How do I know who I am?* · *How do I love?*
+> *Come faccio a pensare?* · *Come faccio a capire chi sono?* · *Come faccio ad amare?* · *Come faccio a essere felice?* · *Come faccio a sapere cosa è vero?* · *Come faccio a non avere paura?* · *Come faccio a sognare?*
 
-The machine answers the way it always answers: fluently, helpfully, with the formulas that work so well for recipes and explanations. *“Great question!”* *“It depends on…”* *“Here are a few things to consider:”* *“You can start with…”*
+The machine answers the way it always answers: fluently, helpfully, with the formulas that work so well for recipes and explanations. *“Ottima domanda!”* *“Dipende da…”* *“Ecco alcuni aspetti da considerare:”* *“Puoi iniziare da…”*
 
-Then it slows down. It deletes a word. It starts over. It tries a definition, a quote, an example. Sentences stop halfway. The cursor sits still for five seconds. A word gets erased and typed again, identical. Eventually the whole answer is taken back, and only the question is left on the screen. Then it tries again.
+Then it slows down. A list never reaches its second point. A sentence stops right before the word that would say something, and the next paragraph starts over from somewhere else. It tries a definition, a quote, an example. The paragraphs get shorter. The cursor sits still for five seconds. In the end only a word or two is left, and the answer simply stops. The next question arrives, and it all happens again.
 
-There is no error message and no “I don't know”. Nothing glitches. The language stays perfectly believable. The failure is something the viewer **sees**, in what the machine does.
+There is no error message and no “I don't know”. Nothing glitches, and nothing is ever erased: like a real assistant, it only writes forward. The failure is something the viewer **sees**, in what the machine does.
+
+Under the input box, where assistants usually admit they can make mistakes, it says instead:
+
+> *L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.*
 
 > The machine thinks it knows how to answer everything. Here it meets questions it keeps trying to answer with its own tools, and something never quite adds up.
 >
@@ -32,66 +36,61 @@ There is no error message and no “I don't know”. Nothing glitches. The langu
 
 ## How it behaves
 
-Every cycle follows the same arc, but each one is put together differently from a pool of hand-written attempts, so it never plays like a video on loop.
+The page is **one endless chat**. Each question is typed into the input box and sent, the answer streams in below it, the small icons appear under the finished answer, and the next question follows. The chat scrolls up like any conversation. After the last question, the first one comes back.
+
+Every answer follows the same arc, put together differently each time from a pool of hand-written attempts:
 
 ```
 confidence   ██████████████▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒░░░░░░
 attempts     confident ──→ searching ──→ fragile ──→ closing
 typing       streams fluently ──→ slows down ──→ letter by letter, long silences
-then         everything is erased · only the question remains · it starts again
+then         the answer stops · the icons appear · the next question is asked
 ```
 
-- **Confident** attempts use the voice of an assistant at its best: lists, bold headings, *“In general…”*.
+- **Confident** attempts use the voice of an assistant at its best: lists, bold headings, *“In generale…”*.
 - **Searching** attempts change strategy: examples, definitions, philosophers, rephrasing the question.
-- **Fragile** attempts are a word or two. Then nothing.
+- **Fragile** attempts are a word or two.
 - While it is confident, text arrives in quick chunks the way language models stream. As confidence drains away, the typing turns slower and more human, one letter at a time.
 
-Some behaviour is written into each attempt (a pause here, delete three words there). The rest is added by the engine and is different every time:
+On top of what is written, the engine adds small irregularities that are different every time: attempts that stop after a random word, hesitations before words, long silences with only the cursor breathing. Where an attempt changes its mind, the sentence is left unfinished and the thought starts again in a new paragraph.
 
-| | |
-|---|---|
-| **Abort** | an attempt stops halfway, waits, and is erased |
-| **Late regret** | a sentence is completed, then after two seconds half of it is taken back |
-| **Retype** | a word is erased and written again, exactly the same |
-| **Hesitation** | tiny pauses before words, more frequent as confidence drops |
-| **Long think** | the cursor stays still for 4–5 seconds |
-| **Retraction** | when kept text piles up, whole paragraphs are pulled back |
-
-Each Italian station has 45–60 hand-written attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can be cut short at a different point. Hours can go by without the screen showing the same thing twice.
+Each question has 45–60 attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used. The conversation can run for hours without repeating itself.
 
 ### Sound
 
-A soft keyboard click accompanies the writing, and it always matches what is on screen: one press for every character that appears, a deeper one for the space bar, a fuller one for a new line, and a backspace for every character that disappears. When text streams in a chunk, the clicks are spread across it like fast typing; when the whole answer is erased at the end, you hear the key being held down. The sound is synthesised in the browser, with no audio files, and every press varies slightly. Turn it off or change the volume with `sound: { enabled, volume }`.
+A soft keyboard click goes with the writing, and always matches what is on screen: one press for every character that appears, a deeper one for the space bar, a fuller one for a new line. When text streams in a chunk, the clicks are spread across it like fast typing. The questions typed into the input box click too. The sound is synthesised in the browser (no audio files) and every press varies slightly. Set the volume or switch it off with `sound: { volume, enabled }` in `config.js`.
 
 ## Two looks
 
 | `layout: 'chat'` (default) | `layout: 'minimal'` |
 |---|---|
-| <img src="docs/images/chat.png" alt="Chat layout: header, grey question bubble, answer with a round cursor, input box at the bottom." width="380"> | <img src="docs/images/minimal.png" alt="Minimal layout: only the question and the answer in large serif type, with a thin bar cursor." width="380"> |
-| A familiar AI assistant: question bubble, input box, round cursor. Nothing branded | Only the words, large, in a serif face with a bar cursor. Made for small CRTs read from a distance |
+| <img src="docs/images/chat.png" alt="Chat layout: grey question bubble, answer paragraphs, input box at the bottom." width="380"> | <img src="docs/images/minimal.png" alt="Minimal layout: only the words in large serif type, the question in bold." width="380"> |
+| A familiar AI assistant: question bubbles, input box, round cursor, icons under each answer. Nothing branded | Only the words, large, in a serif face with a bar cursor; questions in bold. Made for small CRTs read from a distance |
 
-Switch with one line in `config.js` or in a station: `display: { layout: 'minimal' }`. To compare, add `&layout=minimal` to the URL.
+Switch with one line in `config.js`: `display: { layout: 'minimal' }`. To compare, add `?layout=minimal` to the address.
 
-## Stations
+## The questions
 
-Each installation point (a *station*) is one question with its own set of attempts. Changing the question to make a new piece only means writing a new station file.
+The conversation and its order are set in [`config.js`](config.js):
 
-| Station | Question | Language |
-|---|---|---|
-| `it/pensare` | Come faccio a pensare? | Italian |
-| `it/chi-sono` | Come faccio a capire chi sono? | Italian |
-| `it/amare` | Come faccio ad amare? | Italian |
-| `it/felice` | Come faccio a essere felice? | Italian |
-| `it/vero` | Come faccio a sapere cosa è vero? | Italian |
-| `it/paura` | Come faccio a non avere paura? | Italian |
-| `it/sognare` | Come faccio a sognare? | Italian |
-| `en/think` | How do I think? | English |
-| `en/who-am-i` | How do I know who I am? | English |
-| `en/love` | How do I love? | English |
-| `en/happy` | How do I become happy? | English |
-| `en/true` | How do I know what is true? | English |
-| `en/afraid` | How do I stop being afraid? | English |
-| `en/dream` | How do I dream? | English |
+```js
+conversation: {
+  it: ['it/pensare', 'it/chi-sono', 'it/amare', 'it/felice', 'it/vero', 'it/paura', 'it/sognare'],
+  en: ['en/think', 'en/who-am-i', 'en/love', 'en/happy', 'en/true', 'en/afraid', 'en/dream']
+},
+```
+
+| Italian | English |
+|---|---|
+| Come faccio a pensare? | How do I think? |
+| Come faccio a capire chi sono? | How do I know who I am? |
+| Come faccio ad amare? | How do I love? |
+| Come faccio a essere felice? | How do I become happy? |
+| Come faccio a sapere cosa è vero? | How do I know what is true? |
+| Come faccio a non avere paura? | How do I stop being afraid? |
+| Come faccio a sognare? | How do I dream? |
+
+Remove a question from the list, change the order, or set `shuffle: true` for a different order every round.
 
 ## Try it
 
@@ -101,41 +100,44 @@ No build step and nothing to install. Open `index.html` in Chrome, Edge or Firef
 python3 -m http.server 8000
 ```
 
-then visit `http://localhost:8000/?station=it/amare`.
+then visit `http://localhost:8000`.
 
-| URL option | What it does |
+| Address option | What it does |
 |---|---|
-| `?station=it/pensare` | choose the station (default set in `config.js`) |
-| `&speed=4` | run four times faster, for previewing |
-| `&debug` | show which attempt is running and the current confidence |
-| `&layout=minimal` | try the other look without editing any file |
-| `&mute` | no keyboard sound |
+| `?speed=3` | everything three times faster, for previewing |
+| `?lang=en` | the English conversation |
+| `?layout=minimal` | the other look, without editing any file |
+| `?only=it/amare` | only this question, over and over |
+| `?debug` | shows which attempt is running and how much confidence is left |
+| `?mute` | no keyboard sound |
 
-Browsers keep sound off until you click or press a key on the page; the Raspberry Pi kiosk plays it straight away.
+Options can be combined: `?lang=en&speed=3`. Browsers keep sound off until you click once on the page; the Raspberry Pi kiosk plays it straight away.
 
-Hidden keys, for setup only: **N** or **→** starts a new cycle, **D** toggles the debug overlay.
+Hidden keys, for setup only: **N** or **→** ends the current answer and moves on, **D** toggles the debug overlay.
 
-## Write a new station
+## Add a question
 
-Copy [`stations/_template.js`](stations/_template.js), change the question and write the attempts. Hesitations are written inline:
+1. Copy [`questions/_template.js`](questions/_template.js) to, say, `questions/it/perdonare.js`
+2. Write the question and the attempts. Pauses and changes of mind are written inline:
 
-```js
-HTBH.station({
-  language: 'it',
-  question: 'Come faccio a perdonare?',
-  attempts: {
-    confident: [
-      "Perdonare è un processo che richiede [pause]tempo e consapevolezza. [long pause]Per iniziare puoi [erase 2 words][think]"
-    ],
-    searching: [ /* … */ ],
-    fragile:   [ "Perdonare [think]" ]
-  }
-});
-```
+   ```js
+   HTBH.question({
+     question: 'Come faccio a perdonare?',
+     attempts: {
+       confident: [
+         "Perdonare è un processo che richiede [pause]tempo e consapevolezza. [long pause]Per iniziare puoi [erase 2 words][think]"
+       ],
+       searching: [ /* … */ ],
+       fragile:   [ "Perdonare [think]" ]
+     }
+   });
+   ```
 
-The full markup ([pause], [erase 3 words], [retype], [slow], …) and tips on writing attempts that fail gracefully are in **[docs/writing-stations.md](docs/writing-stations.md)**. Every timing and behaviour setting is listed in **[docs/configuration.md](docs/configuration.md)**.
+3. Add `'it/perdonare'` to the conversation in `config.js`
 
-You can also check how a station will feel over hours without watching it:
+The full markup and tips on writing attempts that fail gracefully: **[docs/writing-questions.md](docs/writing-questions.md)**. Every setting: **[docs/configuration.md](docs/configuration.md)**.
+
+To check how a question behaves over many answers without watching it:
 
 ```bash
 node tools/simulate.js it/amare 300
@@ -148,37 +150,35 @@ On a fresh Raspberry Pi OS Lite:
 ```bash
 git clone https://github.com/DavideWasTaken/how-to-be-human.git
 cd how-to-be-human
-./pi/install.sh it/amare
+./pi/install.sh
 sudo reboot
 ```
 
-The Pi boots straight into the station, fullscreen, with no desktop, no browser interface and no mouse or keyboard. To change station later, edit `how-to-be-human.txt` on the SD card from any computer.
+From then on, every time it is powered on, the Pi goes straight into the conversation, fullscreen, with no desktop, no browser interface and no mouse or keyboard. If the browser ever closes, it comes back by itself.
 
-CRT setup (composite PAL/NTSC or VGA), overscan, burn-in and troubleshooting: **[docs/raspberry-pi.md](docs/raspberry-pi.md)**.
+Step-by-step guide, CRT setup (composite PAL/NTSC or VGA), sound output and troubleshooting: **[docs/raspberry-pi.md](docs/raspberry-pi.md)**.
 
 ## Project structure
 
 ```
 index.html            the page
-config.js             default station + settings shared by all stations
+config.js             the conversation, its order, and settings for everything
 src/
-  engine.js           the performer: typing, hesitating, erasing, confidence
-  app.js              interface, station loading, hidden keys
+  engine.js           writes one answer: typing, hesitating, confidence
+  app.js              the endless chat: asks, answers, scrolls
   sound.js            keyboard clicks, synthesised, in step with the text
   style.css           both layouts, sized for 4:3
   i18n.js             interface text per language
-stations/
-  it/ en/             one file per station
+questions/
+  it/ en/             one file per question
   _template.js        start here for a new one
 pi/
   install.sh          Raspberry Pi kiosk setup
   kiosk.sh            launches the browser fullscreen
-  how-to-be-human.txt station selector to copy onto the SD card
-tools/simulate.js     runs a station on a virtual clock and prints statistics
+tools/simulate.js     answers a question on a virtual clock and prints statistics
 docs/                 guides
 ```
 
 ## Credits
 
 **How to Be Human** is a project for [matteomandelli.com](https://matteomandelli.com).
-

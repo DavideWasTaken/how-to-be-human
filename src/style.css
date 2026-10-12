@@ -76,34 +76,37 @@ body {
   color: var(--muted);
 }
 
+/* one endless chat: always scrolled to the newest words */
 .thread {
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+  scroll-behavior: auto;
+}
+
+.thread-inner {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
   padding: 0.6em 0.4em 1em;
 }
 
 .turn + .turn { margin-top: 1.1em; }
-
-/* the question stays put; a long answer scrolls under it */
-.turn-assistant {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
+.turn-user + .turn-assistant { margin-top: 0.9em; }
+.turn-assistant + .turn-user { margin-top: 1.6em; }
 
 /* ---------- the question ---------- */
 
 .turn-user {
   display: flex;
   justify-content: flex-end;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  animation: arrive 0.3s ease;
 }
 
-.turn-user.is-hidden {
-  opacity: 0;
-  transform: translateY(0.6em);
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(0.5em); }
+  to { opacity: 1; transform: none; }
 }
 
 .bubble {
@@ -144,6 +147,20 @@ body {
 .li-body { flex: 1; min-width: 0; }
 
 strong { font-weight: 650; }
+
+/* icons under a finished answer */
+.actions {
+  display: flex;
+  gap: 0.55em;
+  margin-top: 0.45em;
+  color: var(--muted);
+  animation: arrive 0.4s ease;
+}
+
+.actions svg {
+  width: 0.8em;
+  height: 0.8em;
+}
 
 /* ---------- the cursor ---------- */
 
@@ -276,11 +293,11 @@ body[data-layout="minimal"] .screen {
   padding: calc(var(--overscan) + 4%) calc(var(--overscan) + 6%);
 }
 
-body[data-layout="minimal"] .thread { padding: 0; }
+body[data-layout="minimal"] .thread-inner { padding: 0; }
 
 body[data-layout="minimal"] .turn-user {
   display: block;
-  transition: none;
+  animation: none;
 }
 
 body[data-layout="minimal"] .bubble {
@@ -288,9 +305,11 @@ body[data-layout="minimal"] .bubble {
   padding: 0;
   border-radius: 0;
   background: none;
+  font-weight: 700;
 }
 
-body[data-layout="minimal"] .turn + .turn { margin-top: 0.6em; }
+body[data-layout="minimal"] .turn-user + .turn-assistant { margin-top: 0.5em; }
+body[data-layout="minimal"] .turn-assistant + .turn-user { margin-top: 1.4em; }
 body[data-layout="minimal"] .line { min-height: 1.35em; }
 body[data-layout="minimal"] .para + .para { margin-top: 0.5em; }
 body[data-layout="minimal"] strong { font-weight: 700; }

@@ -1,12 +1,12 @@
 # Running on a Raspberry Pi
 
-The goal: plug in the Pi, and a few seconds later the station is running fullscreen on the monitor. No desktop, no browser interface, no mouse or keyboard, nothing to start by hand.
+The goal: plug in the Pi, and a few seconds later the conversation is running fullscreen on the monitor. No desktop, no browser interface, no mouse or keyboard, nothing to start by hand.
 
 How it works: the Pi logs in automatically on its first console and launches [cage](https://github.com/cage-kiosk/cage), a minimal kiosk compositor that can show exactly one application fullscreen. That application is Chromium in kiosk mode, opening `index.html` from the SD card. Nothing needs the internet once installed.
 
 - [What you need](#what-you-need)
 - [Installation](#installation)
-- [Choosing the station](#choosing-the-station)
+- [Changing what it shows](#changing-what-it-shows)
 - [Connecting a CRT](#connecting-a-crt)
 - [For a long exhibition](#for-a-long-exhibition)
 - [Troubleshooting](#troubleshooting)
@@ -43,23 +43,22 @@ cd how-to-be-human
 ### 3. Install
 
 ```bash
-./pi/install.sh it/amare
+./pi/install.sh
 sudo reboot
 ```
 
-Replace `it/amare` with the station this Pi should show. The script:
+The script:
 
 1. installs `cage`, `chromium` and the fonts
-2. saves the station in `pi/station.conf`
-3. turns on automatic login on the console
-4. adds a few lines to `~/.profile` that start the station on the first console, and restart it if it ever closes
-5. hides boot messages and disables screen blanking (the original `cmdline.txt` is saved as `cmdline.txt.htbh-backup`)
+2. turns on automatic login on the console
+3. adds a few lines to `~/.profile` that start the conversation on the first console, and restart it if it ever closes
+4. hides boot messages and disables screen blanking (the original `cmdline.txt` is saved as `cmdline.txt.htbh-backup`)
 
-After the reboot the station starts by itself. This is what happens every time the Pi is powered on:
+After the reboot the conversation starts by itself. This is what happens every time the Pi is powered on:
 
 ```
 power on → quiet boot → automatic login on tty1 → ~/.profile starts cage
-        → cage opens Chromium in kiosk mode, fullscreen → index.html?station=…
+        → cage opens Chromium in kiosk mode, fullscreen → index.html
 ```
 
 Chromium runs with no address bar, no tabs, no error dialogs and no "restore pages" prompt, and the mouse pointer is hidden. If Chromium ever closes or crashes, it is started again after two seconds. Sound is allowed to play without anyone touching the page.
@@ -85,23 +84,17 @@ cd ~/how-to-be-human && git pull && sudo reboot
 ./pi/uninstall.sh
 ```
 
-## Choosing the station
+## Changing what it shows
 
-Three ways, from the most convenient:
+Everything is in `config.js` in the project folder: which questions are asked and in what order, the language, the look (`chat` or `minimal`), text size, sound volume. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
 
-**From any computer, without connecting to the Pi.** Copy [`pi/how-to-be-human.txt`](../pi/how-to-be-human.txt) to the SD card's boot partition (the small partition that Windows and macOS can open, called `bootfs`) and write the station name in it:
+To try something without editing `config.js`, create `pi/kiosk.conf` with address options, for example the English conversation three times faster:
 
+```bash
+echo 'QUERY="lang=en&speed=3&debug"' > ~/how-to-be-human/pi/kiosk.conf
 ```
-it/pensare
-```
 
-This file wins over everything else, so you can prepare three identical SD cards and set the station on each one with a text editor.
-
-**By running the installer again:** `./pi/install.sh it/chi-sono`
-
-**By editing** `pi/station.conf` on the Pi.
-
-A station you wrote yourself works the same way: put the file in `stations/` and use its name.
+Delete the file to go back to normal.
 
 ## Connecting a CRT
 
@@ -139,7 +132,7 @@ PAL is the standard in Italy and most of Europe. For an NTSC television (America
 
 The details change slightly between Pi models and OS releases; if the picture does not appear, check the official [display documentation](https://www.raspberrypi.com/documentation/computers/config_txt.html#video-options).
 
-Composite is soft and interlaced, so thin lines shimmer. In `config.js` or the station, a slightly bigger text and larger margins help:
+Composite is soft and interlaced, so thin lines shimmer. In `config.js`, a slightly bigger text and larger margins help:
 
 ```js
 display: { textSize: 1.15, overscan: 7 }
@@ -169,22 +162,22 @@ CRTs often cut off the edges of the picture. Instead of the firmware overscan se
 
 **Burn-in.** The header and the input box never move, and CRTs can mark permanently over weeks. `display.antiBurnIn` (on by default) shifts the whole layout by a few pixels every cycle. Turning the monitors off at night helps much more.
 
-**Power cuts.** If the installation is switched on and off at the mains every day, protect the SD card by making it read-only: `sudo raspi-config` → *Performance Options* → *Overlay File System* → enable it, and reboot. To change anything later (station, updates), disable it again the same way. The boot partition file `how-to-be-human.txt` can be protected too when raspi-config asks.
+**Power cuts.** If the installation is switched on and off at the mains every day, protect the SD card by making it read-only: `sudo raspi-config` → *Performance Options* → *Overlay File System* → enable it, and reboot. To change anything later (`config.js`, updates), disable it again the same way.
 
-**A timer socket** that cuts power at closing time and restores it in the morning is all that is needed: the Pi starts the station on its own every time.
+**A timer socket** that cuts power at closing time and restores it in the morning is all that is needed: the Pi starts the conversation on its own every time.
 
 ## Troubleshooting
 
-**The console with a login prompt appears instead of the station.** Automatic login is off. Run `sudo raspi-config nonint do_boot_behaviour B2` and reboot.
+**The console with a login prompt appears instead of the conversation.** Automatic login is off. Run `sudo raspi-config nonint do_boot_behaviour B2` and reboot.
 
-**Black screen, or the station does not start.** Connect a keyboard, press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd> to get a second console, log in, and start it by hand to see the error:
+**Black screen, or the conversation does not start.** Connect a keyboard, press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd> to get a second console, log in, and start it by hand to see the error:
 
 ```bash
 cage -- ~/how-to-be-human/pi/kiosk.sh
 ```
 
-**"Station not found"** in small grey letters. The station name does not match a file in `stations/`. Names are like `it/amare`: language folder, slash, file name without `.js`.
+**"No questions found"** in small grey letters. The names in `conversation` in `config.js` do not match files in `questions/`. Names are like `it/amare`: language folder, slash, file name without `.js`.
 
-**Restart the station without rebooting:** `pkill -f chromium` over SSH. It comes back after two seconds.
+**Restart without rebooting:** `pkill -f chromium` over SSH. It comes back after two seconds.
 
-**Preview a station on the Pi faster:** in `pi/station.conf` add `EXTRA_QUERY="&speed=3&debug"` and restart. Remove it afterwards.
+**Watch it faster on the Pi:** put `QUERY="speed=3&debug"` in `pi/kiosk.conf` and restart. Delete the file afterwards.

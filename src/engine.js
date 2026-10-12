@@ -1,8 +1,8 @@
 /*
  * How to Be Human — performance engine.
  *
- * Takes a station (a question + prepared attempts) and performs it forever:
- * typing, hesitating, erasing, restarting. No randomness is visible as
+ * Takes one question and its prepared attempts and writes an answer:
+ * typing, hesitating, starting over. No randomness is visible as
  * "glitch": every behaviour is something a writer would do.
  */
 (function (global) {
@@ -24,10 +24,12 @@
       firstWordDelay: [1.2, 2.6], // pulsing dot before the first word
       betweenAttempts: [0.5, 1.6],
       lateRegretDelay: [1.6, 2.6],// finishes a sentence, waits, then erases half of it
-      finalHold: [2, 4],          // last state before everything is erased
-      questionHold: [3, 5]        // only the question on screen
+      finalHold: [2, 4],          // the cursor waits on the last words before the answer ends
+      nextQuestion: [4, 7]        // after an answer ends, before the next question is typed
     },
     behaviour: {
+      backspace: false,     // false: writing only goes forward, like a chat assistant.
+                            // true: it also erases, retypes and takes sentences back
       eraseAttempt: 0.6,    // chance an attempt is erased entirely when it ends
       erasePartial: 0.2,    // chance it is cut in half instead ("late regret")
       abortChance: 0.25,    // chance an attempt stops halfway through
@@ -52,7 +54,6 @@
       headerTitle: null,    // null = default for the language, '' = hidden
       placeholder: null,
       footnote: null,
-      introTyping: true,    // at boot, the question is typed and "sent"
       antiBurnIn: true      // shifts the layout by a few pixels every cycle
     },
     sound: {
@@ -158,10 +159,10 @@
   /* ---------- the performer ---------- */
 
   class Performer {
-    constructor(station, ui, opts) {
-      this.s = station;
-      this.t = station.timing;
-      this.b = station.behaviour;
+    constructor(question, ui, opts) {
+      this.s = question;
+      this.t = question.timing;
+      this.b = question.behaviour;
       this.ui = ui;
       this.scale = (opts && opts.speed) || 1;
       this.glyphs = [];
@@ -174,11 +175,11 @@
 
       this.pools = {};
       for (const tier of TIERS.concat('closing')) {
-        const list = (station.attempts && station.attempts[tier]) || [];
+        const list = (question.attempts && question.attempts[tier]) || [];
         this.pools[tier] = list.map((a, i) => normaliseAttempt(a, tier, i));
       }
       if (!TIERS.some((t) => this.pools[t].length)) {
-        throw new Error('This station has no attempts. Add some to attempts.confident / searching / fragile.');
+        throw new Error('This question has no attempts. Add some to attempts.confident / searching / fragile.');
       }
     }
 
@@ -213,54 +214,17 @@
       reject(new Cancelled());
     }
 
-    /* --- main loop --- */
+    /* --- one answer --- */
 
-    async run() {
-      if (this.s.display.introTyping) {
-        try {
-          await this.intro();
-        } catch (e) {
-          if (!(e instanceof Cancelled)) throw e;
-        }
-      }
-      this.ui.showQuestion(true);
-      for (;;) {
-        try {
-          await this.cycle();
-        } catch (e) {
-          if (!(e instanceof Cancelled)) {
-            console.error(e);
-            await new Promise((r) => setTimeout(r, 1000));
-          }
-        }
-      }
-    }
-
-    async intro() {
-      const q = this.s.question;
-      this.ui.showQuestion(false);
-      this.ui.setInput('');
-      await this.sleep(1.6);
-      for (let i = 0; i < q.length; i++) {
-        this.ui.setInput(q.slice(0, i + 1));
-        this.ui.keys(q[i], 0);
-        await this.sleep(rand(0.07, 0.22) + (q[i] === ' ' ? rand(0, 0.15) : 0));
-      }
-      await this.sleep(0.9);
-      this.ui.pressSend();
-      await this.sleep(0.2);
-      this.ui.setInput('');
-      this.ui.showQuestion(true);
-      await this.sleep(0.4);
-    }
-
-    async cycle() {
+    /**
+     * Writes one complete answer into whatever element the ui currently
+     * targets: confident at first, then searching, then fragile, then it stops.
+     */
+    async answer() {
       this.glyphs = [];
-      this.ui.resetAnswer();
       this.ui.render(this.glyphs);
       this.ui.cursor('idle');
       this.ui.setGenerating(true);
-      this.ui.nudge();
 
       this.cycleStart = performance.now();
       this.target = range(this.t.cycleSeconds);
@@ -284,11 +248,10 @@
       if (closing) await this.perform(closing, {});
 
       await this.sleep(range(this.t.finalHold));
-      await this.finalErase();
+      if (this.b.backspace) await this.finalErase();
       this.ui.cursor('hidden');
       this.ui.setGenerating(false);
       this.ui.debug(null);
-      await this.sleep(range(this.t.questionHold));
     }
 
     pickTier() {
@@ -334,7 +297,7 @@
     /* --- one attempt --- */
 
     async perform(attempt, { first }) {
-      await this.makeRoom();
+      if (this.b.backspace) await this.makeRoom();
 
       while (this.glyphs.length && this.glyphs[this.glyphs.length - 1].c === ' ') this.glyphs.pop();
       const base = this.glyphs.length;
@@ -368,14 +331,30 @@
       }
 
       // nothing left of this attempt: take back the paragraph break too
-      if (this.glyphs.length <= ctx.start && ctx.start > base) await this.eraseTo(base, true);
+      if (this.b.backspace && this.glyphs.length <= ctx.start && ctx.start > base) await this.eraseTo(base, true);
     }
 
     async runOp(op, ctx) {
       const c = this.confidence();
       ctx.erasedAll = false;
+      if (!this.b.backspace && (op.type === 'erase' || op.type === 'retype')) {
+        // writing only goes forward: where the script would take words back,
+        // the sentence is abandoned and whatever follows starts over below
+        await this.sleep(this.t.shortPause * rand(0.6, 1.4));
+        ctx.restart = true;
+        return;
+      }
       switch (op.type) {
         case 'text':
+          if (ctx.restart) {
+            ctx.restart = false;
+            const rest = op.text.replace(/^\s+/, '').replace(/\p{L}/u, (ch) => ch.toUpperCase());
+            if (!rest) break;
+            while (this.glyphs.length && this.glyphs[this.glyphs.length - 1].c === ' ') this.glyphs.pop();
+            if (this.glyphs.length > ctx.start) await this.typeChars('\n\n', { bold: false, typed: 0, speed: 1 });
+            await this.typeText(rest, ctx);
+            break;
+          }
           await this.typeText(op.text, ctx);
           break;
         case 'pause': {
@@ -405,7 +384,7 @@
     }
 
     async ending(ctx) {
-      if (this.glyphs.length <= ctx.start) return;
+      if (!this.b.backspace || this.glyphs.length <= ctx.start) return;
       const c = this.confidence();
       const pAll = this.b.eraseAttempt;
       const pHalf = this.b.erasePartial;
@@ -432,6 +411,7 @@
     async afterAbort(ctx) {
       if (chance(0.35)) await this.sleep(range(this.t.thinkPause));
       else await this.sleep(this.t.longPause * rand(0.6, 1.3));
+      if (!this.b.backspace) return; // the sentence just stays unfinished
       if (chance(0.3)) {
         await this.eraseTo(this.wordBoundary(1, ctx.start));
         await this.sleep(this.t.shortPause * rand(0.6, 1.8));
@@ -468,7 +448,9 @@
           }
           const from = this.glyphs.length;
           await this.typeChars(tok, ctx);
-          if (tok.length >= 3 && chance(this.b.retypeWord * (1.5 - c))) await this.retype(from, ctx);
+          // without backspace, an abort always lands after a whole word
+          if (!this.b.backspace && ctx.cutAt && ctx.typed >= ctx.cutAt) throw new Aborted();
+          if (this.b.backspace && tok.length >= 3 && chance(this.b.retypeWord * (1.5 - c))) await this.retype(from, ctx);
         }
       }
     }
@@ -484,7 +466,7 @@
         for (let k = 0; k < piece.length; k++) {
           this.glyphs.push({ c: piece[k], b: ctx.bold });
           ctx.typed++;
-          if (ctx.cutAt && ctx.typed >= ctx.cutAt) {
+          if (this.b.backspace && ctx.cutAt && ctx.typed >= ctx.cutAt) {
             this.ui.render(this.glyphs);
             this.ui.keys(piece.slice(0, k + 1), 0.05);
             throw new Aborted();
@@ -623,4 +605,5 @@
   }
 
   HTBH.Performer = Performer;
+  HTBH.Cancelled = Cancelled;
 })(window);

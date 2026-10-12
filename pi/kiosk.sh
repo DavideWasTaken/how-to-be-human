@@ -1,34 +1,22 @@
 #!/usr/bin/env bash
 #
 # How to Be Human — kiosk launcher.
-# Started automatically on tty1 (see install.sh). Opens the station fullscreen
-# with no browser interface, inside the `cage` kiosk compositor.
+# Started automatically on tty1 (see install.sh). Opens the conversation
+# fullscreen with no browser interface, inside the `cage` kiosk compositor.
 #
-# Station is chosen, in order of priority, by:
-#   1. a text file on the SD card boot partition:  how-to-be-human.txt
-#      (one line, e.g.  it/amare  — editable from any computer)
-#   2. pi/station.conf, written by install.sh
-#   3. the default below
+# What it shows is set in config.js. For a quick test without editing it,
+# create pi/kiosk.conf with e.g.  QUERY="lang=en&speed=3&debug"
 #
 set -u
 
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-STATION="it/amare"
-EXTRA_QUERY=""
+QUERY=""
 
 # shellcheck disable=SC1091
-[ -f "$APP_DIR/pi/station.conf" ] && . "$APP_DIR/pi/station.conf"
-
-for f in /boot/firmware/how-to-be-human.txt /boot/how-to-be-human.txt; do
-  if [ -f "$f" ]; then
-    s="$(grep -v '^\s*#' "$f" | tr -d ' \r\t' | head -n 1)"
-    [ -n "$s" ] && STATION="$s"
-    break
-  fi
-done
+[ -f "$APP_DIR/pi/kiosk.conf" ] && . "$APP_DIR/pi/kiosk.conf"
 
 BROWSER="$(command -v chromium || command -v chromium-browser)"
-URL="file://$APP_DIR/index.html?station=$STATION$EXTRA_QUERY"
+URL="file://$APP_DIR/index.html${QUERY:+?$QUERY}"
 PROFILE="$HOME/.cache/how-to-be-human/chromium"
 mkdir -p "$PROFILE"
 

@@ -2,16 +2,14 @@
 #
 # How to Be Human — Raspberry Pi installer.
 #
-#   ./pi/install.sh                 # installs with the default station (it/amare)
-#   ./pi/install.sh it/pensare      # installs and selects a station
+#   ./pi/install.sh
 #
-# Tested target: Raspberry Pi OS Lite (Bookworm or newer), run as the normal
-# user (not root). After a reboot the Pi starts straight into the station:
+# Target: Raspberry Pi OS Lite (Bookworm or newer), run as the normal
+# user (not root). After a reboot the Pi starts straight into the conversation:
 # no desktop, no browser chrome, no mouse or keyboard needed.
 #
 set -euo pipefail
 
-STATION="${1:-it/amare}"
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 MARK_BEGIN="# >>> how-to-be-human >>>"
 MARK_END="# <<< how-to-be-human <<<"
@@ -23,13 +21,7 @@ if [ "$(id -u)" -eq 0 ]; then
   exit 1
 fi
 
-if [ ! -f "$APP_DIR/stations/$STATION.js" ]; then
-  echo "Station not found: stations/$STATION.js"
-  echo "Available:"; (cd "$APP_DIR/stations" && find . -name '*.js' ! -name '_*' | sed 's|^\./||; s|\.js$||' | sort)
-  exit 1
-fi
-
-say "1/5  Installing packages (cage, chromium, fonts)"
+say "1/4  Installing packages (cage, chromium, fonts)"
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends cage
 if apt-cache show chromium >/dev/null 2>&1; then
@@ -41,15 +33,13 @@ fi
 sudo apt-get install -y --no-install-recommends fonts-inter fonts-liberation \
   || echo "Some fonts are not available — falling back to system fonts."
 
-say "2/5  Selecting station: $STATION"
-printf 'STATION=%s\n' "$STATION" > "$APP_DIR/pi/station.conf"
 chmod +x "$APP_DIR/pi/kiosk.sh"
 
-say "3/5  Enabling console auto-login"
+say "2/4  Enabling console auto-login"
 sudo raspi-config nonint do_boot_behaviour B2
 touch "$HOME/.hushlogin"
 
-say "4/5  Starting the kiosk on boot"
+say "3/4  Starting the kiosk on boot"
 # bash reads ~/.bash_profile instead of ~/.profile when it exists, so never create it
 PROFILE_FILE="$HOME/.profile"
 [ -f "$HOME/.bash_profile" ] && PROFILE_FILE="$HOME/.bash_profile"
@@ -69,7 +59,7 @@ fi
 $MARK_END
 EOF
 
-say "5/5  Quiet boot and no screen blanking"
+say "4/4  Quiet boot and no screen blanking"
 CMDLINE=/boot/firmware/cmdline.txt
 [ -f "$CMDLINE" ] || CMDLINE=/boot/cmdline.txt
 sudo cp -n "$CMDLINE" "$CMDLINE.htbh-backup" || true
@@ -78,7 +68,5 @@ for opt in consoleblank=0 quiet loglevel=3 logo.nologo vt.global_cursor_default=
 done
 
 say "Done."
-echo "Station: $STATION"
 echo "Reboot to start:  sudo reboot"
-echo "Change station later by editing how-to-be-human.txt on the SD card boot partition,"
-echo "or by running this script again with another station name."
+echo "Questions, order, language and look are set in config.js."

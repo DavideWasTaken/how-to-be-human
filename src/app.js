@@ -1,11 +1,17 @@
 /*
- * How to Be Human — interface and boot.
+ * How to Be Human — the conversation.
  *
- * Picks the station (URL ?station= or config.js), loads its file, builds the
- * chat interface and hands it to the performer.
+ * Loads every question listed in config.js, then plays one endless chat:
+ * a question is typed into the input box and sent, the assistant answers,
+ * the next question follows. When the list ends, it starts again.
+ *
+ * URL options (for previewing):
+ *   ?lang=en            use another conversation from config.js
+ *   ?only=it/amare      ask only this question, over and over
+ *   &speed=3 &debug &layout=minimal &mute
  *
  * Hidden keys, for setup only (the installation needs no keyboard):
- *   N or →   start a new cycle now
+ *   N or →   end the current answer now and move on
  *   D        show / hide the debug overlay
  */
 (function (global) {
@@ -15,7 +21,11 @@
   const CONFIG = global.HTBH_CONFIG || {};
   const params = new URLSearchParams(location.search);
 
-  const stationId = (params.get('station') || CONFIG.station || 'it/amare').replace(/[^a-z0-9/_-]/gi, '');
+  const clean = (s) => (s || '').replace(/[^a-z0-9/_-]/gi, '');
+  const language = clean(params.get('lang')) || CONFIG.language || 'it';
+  const only = clean(params.get('only') || params.get('station'));
+  const conversation = CONFIG.conversation || {};
+  const ids = only ? [only] : conversation[language] || [];
   const speed = parseFloat(params.get('speed')) || 1;
 
   const $ = (id) => document.getElementById(id);
@@ -24,10 +34,7 @@
     topbar: $('topbar'),
     title: $('title'),
     thread: $('thread'),
-    userTurn: $('user-turn'),
-    assistantTurn: $('assistant-turn'),
-    question: $('question'),
-    answer: $('answer'),
+    inner: $('thread-inner'),
     composerArea: $('composer-area'),
     input: $('input'),
     placeholder: $('placeholder'),
@@ -37,29 +44,38 @@
     debug: $('debug')
   };
 
-  let performer = null;
-  let sound = null;
-  let started = false;
+  const MAX_TURNS = 10; // older messages, long scrolled away, are removed
+
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const range = (v) => (Array.isArray(v) ? rand(v[0], v[1]) : v);
+  const wait = (seconds) => new Promise((r) => setTimeout(r, (seconds * 1000) / speed));
+
+  let page = null;       // settings shared by the whole page
   let minimal = false;
-  let question = '';
+  let sound = null;
+  let current = null;    // the answer being written: { turn, answer, id }
+  let active = null;     // the performer writing it
+  const defs = {};
+  const performers = {};
 
-  /* ---------- loading the station ---------- */
+  /* ---------- loading the questions ---------- */
 
-  HTBH.station = function (def) {
-    if (started) return;
-    started = true;
-    try {
-      start(def);
-    } catch (e) {
-      notice(e.message);
-      console.error(e);
-    }
+  let loading = null;
+  HTBH.question = function (def) {
+    if (loading) defs[loading] = def;
   };
+  HTBH.station = HTBH.question; // older name
 
-  function load() {
+  function load(i) {
+    if (i >= ids.length) return start();
+    loading = ids[i];
     const script = document.createElement('script');
-    script.src = 'stations/' + stationId + '.js';
-    script.onerror = () => notice('Station not found: stations/' + stationId + '.js');
+    script.src = 'questions/' + ids[i] + '.js';
+    script.onload = () => load(i + 1);
+    script.onerror = () => {
+      console.warn('[how-to-be-human] question not found: questions/' + ids[i] + '.js');
+      load(i + 1);
+    };
     document.head.appendChild(script);
   }
 
@@ -68,26 +84,30 @@
     el.notice.hidden = false;
   }
 
-  /* ---------- building the interface ---------- */
+  /* ---------- building the page ---------- */
 
-  function start(def) {
-    const station = HTBH.merge(
-      {},
-      HTBH.DEFAULTS,
-      { timing: CONFIG.timing, behaviour: CONFIG.behaviour, display: CONFIG.display, sound: CONFIG.sound },
-      def
-    );
-    const d = station.display;
+  function start() {
+    loading = null;
+    const found = ids.filter((id) => defs[id]);
+    if (!found.length) {
+      notice(ids.length ? 'No questions found in questions/: ' + ids.join(', ') : 'No conversation for language "' + language + '" in config.js');
+      return;
+    }
+
+    page = HTBH.merge({}, HTBH.DEFAULTS, {
+      timing: CONFIG.timing, behaviour: CONFIG.behaviour, display: CONFIG.display, sound: CONFIG.sound
+    });
+    const d = page.display;
     if (params.get('layout')) d.layout = params.get('layout');
-    const strings = Object.assign({}, HTBH.STRINGS.en, HTBH.STRINGS[station.language] || {});
+
+    const strings = Object.assign({}, HTBH.STRINGS.en, HTBH.STRINGS[language] || {});
     const text = (key) => (d[key] == null ? strings[key] : d[key]);
 
-    document.documentElement.lang = station.language;
-    document.title = station.question || 'How to Be Human';
-
+    document.documentElement.lang = language;
     const root = document.documentElement.style;
     root.setProperty('--text-size', String(d.textSize));
     root.setProperty('--overscan', d.overscan + '%');
+
     minimal = d.layout === 'minimal';
     document.body.dataset.layout = minimal ? 'minimal' : 'chat';
     document.body.dataset.theme = d.theme;
@@ -99,17 +119,165 @@
     el.composerArea.hidden = minimal || !d.showComposer;
     el.placeholder.textContent = text('placeholder');
     el.footnote.textContent = text('footnote');
-    el.footnote.hidden = !d.showFootnote || !text('footnote');
-    question = station.question;
-    el.question.textContent = question;
+    el.footnote.hidden = minimal || !d.showFootnote || !text('footnote');
 
     sound = new HTBH.KeySound({
-      enabled: station.sound.enabled && !params.has('mute'),
-      volume: station.sound.volume
+      enabled: page.sound.enabled && !params.has('mute'),
+      volume: page.sound.volume
     });
 
-    performer = new HTBH.Performer(station, ui, { speed });
-    performer.run();
+    for (const id of found) {
+      const q = HTBH.merge({}, HTBH.DEFAULTS, { timing: CONFIG.timing, behaviour: CONFIG.behaviour }, defs[id]);
+      try {
+        performers[id] = new HTBH.Performer(q, ui, { speed });
+      } catch (e) {
+        console.warn('[how-to-be-human] ' + id + ': ' + e.message);
+      }
+    }
+
+    converse(found.filter((id) => performers[id]));
+  }
+
+  /* ---------- the endless conversation ---------- */
+
+  async function converse(list) {
+    let first = true;
+    for (;;) {
+      const order = CONFIG.shuffle ? shuffled(list) : list;
+      for (const id of order) {
+        const p = performers[id];
+        await ask(p.s.question, first);
+        first = false;
+
+        current = addAssistantTurn(id);
+        active = p;
+        nudge();
+        try {
+          await p.answer();
+        } catch (e) {
+          if (!(e instanceof HTBH.Cancelled)) console.error(e);
+        }
+        active = null;
+        ui.setGenerating(false);
+        finishAnswer(current);
+
+        await wait(range(page.timing.nextQuestion));
+        prune();
+      }
+    }
+  }
+
+  function shuffled(list) {
+    const a = list.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /** The question is typed like a person would (into the input box, or in place in minimal), then sent. */
+  async function ask(question, first) {
+    await wait(first ? 1.6 : 0.6);
+    let target = null;
+    if (minimal) {
+      target = addUserTurn('').querySelector('.bubble');
+      scrollToEnd();
+    }
+    for (let i = 0; i < question.length; i++) {
+      setTyped(target, question.slice(0, i + 1));
+      if (sound) sound.typed(question[i], 0);
+      await wait(rand(0.07, 0.22) + (question[i] === ' ' ? rand(0, 0.15) : 0));
+    }
+    await wait(0.8);
+    if (minimal) {
+      target.textContent = question;
+    } else {
+      el.send.classList.add('is-pressed');
+      if (sound) sound.typed('\n', 0);
+      setTimeout(() => el.send.classList.remove('is-pressed'), 180);
+      await wait(0.2);
+      setTyped(null, '');
+      addUserTurn(question);
+    }
+    scrollToEnd();
+    await wait(0.5);
+  }
+
+  function setTyped(target, value) {
+    if (target) {
+      target.textContent = value;
+      target.appendChild(caret());
+      return;
+    }
+    el.input.textContent = '';
+    if (value) {
+      el.input.appendChild(document.createTextNode(value));
+      el.input.appendChild(caret());
+    } else {
+      el.input.appendChild(el.placeholder);
+    }
+    el.send.dataset.state = value ? 'ready' : 'empty';
+  }
+
+  function caret() {
+    const c = document.createElement('span');
+    c.className = 'input-caret';
+    return c;
+  }
+
+  function addUserTurn(text) {
+    const turn = document.createElement('div');
+    turn.className = 'turn turn-user';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    turn.appendChild(bubble);
+    el.inner.appendChild(turn);
+    return turn;
+  }
+
+  function addAssistantTurn(id) {
+    const turn = document.createElement('div');
+    turn.className = 'turn turn-assistant';
+    const answer = document.createElement('div');
+    answer.className = 'answer';
+    turn.appendChild(answer);
+    el.inner.appendChild(turn);
+    scrollToEnd();
+    return { turn, answer, id };
+  }
+
+  /** When an answer is over: the small row of icons a chat assistant shows under its messages. */
+  function finishAnswer(c) {
+    c.answer.dataset.cursor = 'hidden';
+    if (minimal) return;
+    const icon = (d) => '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const row = document.createElement('div');
+    row.className = 'actions';
+    row.innerHTML =
+      icon('M7 7V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5v7a1.5 1.5 0 0 1-1.5 1.5H13M4.5 7h7A1.5 1.5 0 0 1 13 8.5v7a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 15.5v-7A1.5 1.5 0 0 1 4.5 7z') +
+      icon('M6 9v8H3.5V9H6zm0 0l3-6a2 2 0 0 1 2 2v3h4.4a1.5 1.5 0 0 1 1.5 1.8l-1.2 6A1.5 1.5 0 0 1 14.2 17H6') +
+      icon('M6 11V3H3.5v8H6zm0 0l3 6a2 2 0 0 0 2-2v-3h4.4a1.5 1.5 0 0 0 1.5-1.8l-1.2-6A1.5 1.5 0 0 0 14.2 3H6') +
+      icon('M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.2h-3.2');
+    c.turn.appendChild(row);
+    scrollToEnd();
+  }
+
+  function scrollToEnd() {
+    el.thread.scrollTop = el.thread.scrollHeight;
+  }
+
+  function prune() {
+    while (el.inner.children.length > MAX_TURNS) el.inner.removeChild(el.inner.firstChild);
+    scrollToEnd();
+  }
+
+  /** Tiny shift of the whole layout for every answer, so static parts do not burn into a CRT. */
+  function nudge() {
+    if (!page.display.antiBurnIn) return;
+    const r = () => Math.round((Math.random() * 2 - 1) * 4);
+    el.screen.style.transform = 'translate(' + r() + 'px,' + r() + 'px)';
   }
 
   /* ---------- the interface the performer drives ---------- */
@@ -151,6 +319,7 @@
 
   const ui = {
     render(glyphs) {
+      if (!current) return;
       const lines = [[]];
       for (const g of glyphs) {
         if (g.c === '\n') lines.push([]);
@@ -172,14 +341,15 @@
         out += lineHtml(line, isLast ? '<span class="cursor"></span>' : '');
       });
       if (open) out += '</div>';
-      el.answer.innerHTML = out;
-      el.assistantTurn.scrollTop = el.assistantTurn.scrollHeight;
+      current.answer.innerHTML = out;
+      scrollToEnd();
 
       if (!cursorHidden) {
-        el.answer.dataset.cursor = 'typing';
+        const answer = current.answer;
+        answer.dataset.cursor = 'typing';
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => {
-          if (!cursorHidden) el.answer.dataset.cursor = 'idle';
+          if (!cursorHidden) answer.dataset.cursor = 'idle';
         }, 450);
       }
     },
@@ -187,10 +357,9 @@
     cursor(state) {
       clearTimeout(idleTimer);
       cursorHidden = state === 'hidden';
-      el.answer.dataset.cursor = state;
+      if (current) current.answer.dataset.cursor = state;
     },
 
-    /** Key clicks for text that just appeared, spread over `span` seconds. */
     keys(text, span) {
       if (sound) sound.typed(text, span);
     },
@@ -203,63 +372,23 @@
       el.send.dataset.state = on ? 'stop' : 'empty';
     },
 
-    showQuestion(on) {
-      if (minimal) {
-        // no composer: the question is typed in place
-        if (on) el.question.textContent = question;
-        return;
-      }
-      el.userTurn.classList.toggle('is-hidden', !on);
-    },
-
-    setInput(value) {
-      if (minimal) {
-        el.question.textContent = value;
-        const caret = document.createElement('span');
-        caret.className = 'input-caret';
-        el.question.appendChild(caret);
-        return;
-      }
-      el.input.textContent = '';
-      if (value) {
-        el.input.appendChild(document.createTextNode(value));
-        const caret = document.createElement('span');
-        caret.className = 'input-caret';
-        el.input.appendChild(caret);
-      } else {
-        el.input.appendChild(el.placeholder);
-      }
-      el.send.dataset.state = value ? 'ready' : 'empty';
-    },
-
-    pressSend() {
-      el.send.classList.add('is-pressed');
-      setTimeout(() => el.send.classList.remove('is-pressed'), 180);
-    },
-
     fadeAnswer() {
-      el.answer.classList.add('is-fading');
+      if (current) current.answer.classList.add('is-fading');
     },
 
     resetAnswer() {
-      el.answer.classList.remove('is-fading');
-    },
-
-    /** Tiny shift of the whole layout every cycle, so static parts do not burn into a CRT. */
-    nudge() {
-      if (!performer || !performer.s.display.antiBurnIn) return;
-      const r = () => Math.round((Math.random() * 2 - 1) * 4);
-      el.screen.style.transform = 'translate(' + r() + 'px,' + r() + 'px)';
+      if (current) current.answer.classList.remove('is-fading');
     },
 
     debug(info) {
       if (el.debug.hidden) return;
+      const id = current ? current.id : '';
       if (!info) {
-        el.debug.textContent = 'station   ' + stationId + '\n(question only)';
+        el.debug.textContent = 'question  ' + id + '\n(answer finished)';
         return;
       }
       el.debug.textContent =
-        'station   ' + stationId + '\n' +
+        'question  ' + id + '\n' +
         'attempt   ' + info.attempt + '\n' +
         'confidence ' + info.confidence.toFixed(2) + '\n' +
         'time      ' + info.elapsed.toFixed(1) + ' / ' + info.target.toFixed(1) + ' s\n' +
@@ -275,9 +404,9 @@
 
   document.addEventListener('keydown', (e) => {
     const k = e.key.toLowerCase();
-    if ((k === 'n' || k === 'arrowright') && performer) performer.skip();
+    if ((k === 'n' || k === 'arrowright') && active) active.skip();
     if (k === 'd') el.debug.hidden = !el.debug.hidden;
   });
 
-  load();
+  load(0);
 })(window);
