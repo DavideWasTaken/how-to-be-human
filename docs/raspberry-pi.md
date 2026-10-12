@@ -105,7 +105,7 @@ This file wins over everything else, so you can prepare identical SD cards and g
 
 ## Changing the look and the rest
 
-Everything else is in `config.js` in the project folder: the look (`chat` or `minimal`), text size, timing. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
+Everything else is in `config.js` in the project folder: the look (`chat`, `minimal`, or the `matrix` and `dark` themes), text size, timing. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
 
 To try something without editing `config.js`, add address options to `pi/kiosk.conf`, for example three times faster with the debug overlay:
 
@@ -161,6 +161,12 @@ On a small television, the `minimal` layout (only the words, large serif type) i
 
 ```js
 display: { layout: 'minimal', overscan: 7 }
+```
+
+For a black screen, the `matrix` theme (green phosphor text with a soft glow and dim falling code) suits a CRT particularly well; `dark` is the same in white, without the falling code:
+
+```js
+display: { theme: 'matrix', overscan: 7 }
 ```
 
 ### VGA (computer CRT monitors)

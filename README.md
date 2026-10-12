@@ -86,14 +86,21 @@ Each topic has 45–60 attempts, drawn like cards from a shuffled deck: none com
 
 There is no sound: the question is already there when the station starts, and the machine flounders in silence.
 
-## Two looks
+## Four looks
 
-| `layout: 'chat'` (default) | `layout: 'minimal'` |
+| Chat (default) | Minimal |
 |---|---|
 | <img src="docs/images/chat.png" alt="Chat layout: grey question bubble, the answer being written, input box at the bottom." width="380"> | <img src="docs/images/minimal.png" alt="Minimal layout: only the words in large serif type, the question in bold." width="380"> |
 | A familiar AI assistant: question bubble, input box, round cursor. Nothing branded | Only the words, large, in a serif face with a bar cursor; the question in bold. Made for small CRTs read from a distance |
+| `display: { layout: 'chat' }` | `display: { layout: 'minimal' }` |
 
-Switch with one line in `config.js`: `display: { layout: 'minimal' }`. To compare, add `?layout=minimal` to the address.
+| Matrix | Dark |
+|---|---|
+| <img src="docs/images/matrix.jpg" alt="Matrix theme: green monospaced text glowing on black, the question as a prompt with “>”, a green block cursor, dim falling green characters in the background." width="380"> | <img src="docs/images/dark.png" alt="Dark theme: white monospaced text on black, the question as a prompt with “>”, a white block cursor." width="380"> |
+| Green phosphor on black, a soft glow, a blinking block cursor, and the falling code of *The Matrix* very dim behind the words. The most striking on a CRT | White on black, the same terminal style without the falling code. Quieter |
+| `display: { theme: 'matrix' }` | `display: { theme: 'dark' }` |
+
+Matrix and dark always use the minimal layout. To compare without editing anything, add `?layout=minimal`, `?theme=matrix` or `?theme=dark` to the address, for example [▶ matrix](https://davidewastaken.github.io/how-to-be-human/?topic=it/chi-sono&theme=matrix). The falling code can be switched off with `display: { theme: 'matrix', rain: false }`.
 
 ## The stations
 
@@ -126,7 +133,8 @@ then visit `http://localhost:8000`.
 |---|---|
 | `?topic=it/paura` | the station's topic |
 | `?speed=3` | everything three times faster, for previewing |
-| `?layout=minimal` | the other look, without editing any file |
+| `?layout=minimal` | the minimal look, without editing any file |
+| `?theme=matrix` / `?theme=dark` | green on black with falling code / white on black |
 | `?debug` | shows which attempt is running and how much confidence is left |
 
 Options can be combined: `?topic=it/paura&speed=3`.
@@ -187,7 +195,8 @@ config.js             the station's topic and settings for everything
 src/
   engine.js           writes, hesitates, erases, gives up, tries again
   app.js              the station: shows the question, runs the attempts
-  style.css           both layouts, sized for 4:3
+  matrix.js           the falling code behind the matrix theme
+  style.css           all the looks, sized for 4:3
   i18n.js             interface text per language
 questions/
   it/ en/             one file per topic

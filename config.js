@@ -35,5 +35,5 @@ window.HTBH_CONFIG = {
 
   timing: {},
   behaviour: {},            // e.g. { backspace: false } to make it write forward only
-  display: {}               // e.g. { layout: 'minimal' }
+  display: {}               // e.g. { layout: 'minimal' } or { theme: 'matrix' } or { theme: 'dark' }
 };

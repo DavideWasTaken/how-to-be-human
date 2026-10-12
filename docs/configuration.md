@@ -94,11 +94,12 @@ Set in `config.js` only.
 | Setting | Default | Meaning |
 |---|---|---|
 | `layout` | `'chat'` | `'chat'`: a familiar AI assistant interface. `'minimal'`: only the questions and the answers, large, nothing else on screen |
-| `font` | automatic | `'sans'` or `'serif'`. By default sans for `chat`, serif for `minimal` |
+| `font` | automatic | `'sans'`, `'serif'` or `'mono'`. By default sans for `chat`, serif for `minimal`, mono for the `matrix` and `dark` themes |
 | `textSize` | `1` | Text scale. `1.2` is 20% larger. The base size already adapts to the screen resolution (and `minimal` is already 1.5× larger) |
 | `overscan` | `4` | Empty margin around everything, in % of the screen. Increase it if a CRT cuts off the edges |
-| `theme` | `'light'` | `'light'` (white) or `'gray'` (very light grey background) |
-| `cursor` | automatic | `'dot'` (round, breathing), `'bar'` or `'block'` (both blinking). By default dot for `chat`, bar for `minimal` |
+| `theme` | `'light'` | `'light'` (white), `'gray'` (very light grey), `'matrix'` (green phosphor on black, soft glow, falling code behind the words) or `'dark'` (white on black). `matrix` and `dark` always use the minimal layout. `?theme=matrix` in the address overrides it |
+| `rain` | `true` | With the `matrix` theme: the dim falling code in the background. `false` switches it off |
+| `cursor` | automatic | `'dot'` (round, breathing), `'bar'` or `'block'` (both blinking). By default dot for `chat`, bar for `minimal`, block for `matrix` and `dark` |
 | `showHeader` | `true` | The small title at the top left (chat layout) |
 | `showComposer` | `true` | The input box at the bottom (chat layout) |
 | `showFootnote` | `true` | The line of text under the input box (chat layout) |

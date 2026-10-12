@@ -33,6 +33,7 @@
   const $ = (id) => document.getElementById(id);
   const el = {
     screen: $('screen'),
+    rain: $('rain'),
     topbar: $('topbar'),
     title: $('title'),
     thread: $('thread'),
@@ -101,6 +102,10 @@
     });
     const d = page.display;
     if (params.get('layout')) d.layout = params.get('layout');
+    if (params.get('theme')) d.theme = params.get('theme');
+    // the dark themes are made for the minimal layout: only the words, on black
+    const dark = d.theme === 'matrix' || d.theme === 'dark';
+    if (dark) d.layout = 'minimal';
 
     const strings = Object.assign({}, HTBH.STRINGS.en, HTBH.STRINGS[language] || {});
     const text = (key) => (d[key] == null ? strings[key] : d[key]);
@@ -113,8 +118,12 @@
     minimal = d.layout === 'minimal';
     document.body.dataset.layout = minimal ? 'minimal' : 'chat';
     document.body.dataset.theme = d.theme;
-    document.body.dataset.cursor = d.cursor || (minimal ? 'bar' : 'dot');
-    document.body.dataset.font = d.font || (minimal ? 'serif' : 'sans');
+    document.body.dataset.cursor = d.cursor || (dark ? 'block' : minimal ? 'bar' : 'dot');
+    document.body.dataset.font = d.font || (dark ? 'mono' : minimal ? 'serif' : 'sans');
+    if (d.theme === 'matrix' && d.rain !== false && HTBH.startRain) {
+      el.rain.hidden = false;
+      HTBH.startRain(el.rain);
+    }
 
     el.title.textContent = text('headerTitle');
     el.topbar.hidden = minimal || !d.showHeader || !text('headerTitle');

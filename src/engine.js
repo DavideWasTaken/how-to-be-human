@@ -48,7 +48,8 @@
       overscan: 4,
       layout: 'chat',       // 'chat' (assistant interface) | 'minimal' (only the words, large)
       font: null,           // 'sans' | 'serif' — null: sans for chat, serif for minimal
-      theme: 'light',       // 'light' | 'gray'
+      theme: 'light',       // 'light' | 'gray' | 'matrix' (green on black, falling code) | 'dark' (white on black)
+      rain: true,           // with the matrix theme: the dim falling code behind the words
       cursor: null,         // 'dot' | 'bar' | 'block' — null: dot for chat, bar for minimal
       showHeader: true,
       showComposer: true,
