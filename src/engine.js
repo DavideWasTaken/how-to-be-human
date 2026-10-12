@@ -310,7 +310,11 @@
       const base = this.glyphs.length;
       if (base > 0) {
         const prev = this.glyphs.length ? this.glyphs[this.glyphs.length - 1].c : '';
-        const sep = /[.!?]/.test(prev) && chance(0.35) ? ' ' : '\n\n';
+        // a new attempt may continue a plain sentence on the same line, never a list item
+        const text = this.glyphs.map((g) => g.c).join('');
+        const lastLine = text.slice(text.lastIndexOf('\n') + 1);
+        const inList = /^(\d+\.|[-•])(\s|$)/.test(lastLine);
+        const sep = !inList && /[.!?]/.test(prev) && chance(0.35) ? ' ' : '\n\n';
         await this.typeChars(sep, { bold: false, typed: 0, speed: 1 });
       }
 

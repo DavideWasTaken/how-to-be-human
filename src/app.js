@@ -347,7 +347,7 @@
   /* ---------- the interface the performer drives ---------- */
 
   const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const LIST_ITEM = /^(\d+\.|[-•])\s/;
+  const LIST_ITEM = /^(\d+\.|[-•])(\s|$)/; // an item left empty ("3.") still lines up
 
   function runsHtml(glyphs) {
     let out = '';
