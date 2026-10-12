@@ -18,13 +18,13 @@
 
 ## The idea
 
-On the screen, a familiar-looking AI chat. Someone types the oldest questions there are:
+A row of old screens, each showing a familiar-looking AI chat. At each one a child types one of the oldest questions there are:
 
 > *Come faccio a pensare?* · *Come faccio a capire chi sono?* · *Come faccio ad amare?* · *Come faccio a essere felice?* · *Come faccio a sapere cosa è vero?* · *Come faccio a non avere paura?* · *Come faccio a sognare?*
 
 The machine answers the way it always answers: fluently, helpfully, with the formulas that work so well for recipes and explanations. *“Ottima domanda!”* *“Dipende da…”* *“Ecco alcuni aspetti da considerare:”* *“Puoi iniziare da…”*
 
-Then it slows down. A list never reaches its second point. A sentence stops right before the word that would say something, and the next paragraph starts over from somewhere else. It tries a definition, a quote, an example. The paragraphs get shorter. The cursor sits still for five seconds. In the end only a word or two is left, and the answer simply stops. The next question arrives, and it all happens again.
+Then it slows down. A list never reaches its second point. A sentence stops right before the word that would say something, and the next paragraph starts over from somewhere else. It tries a definition, a quote, an example. The paragraphs get shorter. The cursor sits still for five seconds. In the end only a word or two is left, and the answer simply stops. The chat clears, the child asks the same question again, and the machine tries again: with different words, and with the same result.
 
 There is no error message and no “I don't know”. Nothing glitches, and nothing is ever erased: like a real assistant, it only writes forward. The failure is something the viewer **sees**, in what the machine does.
 
@@ -38,22 +38,24 @@ Under the input box, where assistants usually admit they can make mistakes, it s
 
 ## How it behaves
 
-The page is **one endless chat**, one topic at a time. For each topic a whole conversation plays out:
+Each screen is a **station** with a single topic. The child asks one question, and only that one, over and over:
 
 ```
-PERSONA   Come faccio ad amare?
-AI        Certo! Ecco una guida in cinque passi per imparare ad amare: …   (falls apart)
-PERSONA   Non ho capito niente
-AI        Nessun problema! Ecco la versione breve: Ascolta. Rispetta. …  È che
-PERSONA   Ma la mamma come fa a volermi bene?
-AI        Non ha bisogno di istruzioni. Lo fa e basta.  Lo fa.  Lei
-PERSONA   Va bene ciao
-AI        A presto! Ricorda che
+BAMBINO   Come faccio a non avere paura?
+AI        In sintesi: respira, parlane, affrontala piano piano. E se non funziona
+          Montaigne scrisse che chi teme di soffrire soffre già di ciò che teme. Quindi
+          Essere coraggiosi non significa non avere paura, ma agire nonostante
+          Paura
+                                                       — the chat clears —
+BAMBINO   Come faccio a non avere paura?
+AI        Dipende da cosa ti fa paura.
+          Certo! Una tecnica molto efficace si chiama esposizione graduale: …
+          La paura è un'emozione naturale che ci protegge dai pericoli. Ecco alcune strategie:
+          1. Respira lentamente.  2. Dai un nome alla paura.  3.
+          Quando
 ```
 
-Every message from the person is typed into the input box and sent; every answer streams in below it, and the small icons appear under it when it ends. The person insists, asks the machine about itself, and finally says goodbye, and even the goodbye cannot be finished. Then the chat clears (*Nuova chat*) and the next topic begins. After the last topic, the first one comes back.
-
-Each topic has **four different conversations** that take turns, so the same topic never plays out the same way twice in a row. With every exchange the machine starts its answer a little less sure of itself. A topic lasts about three minutes; all seven, about twenty.
+The question is typed into the input box and sent; the answer streams in below it, and the small icons appear under it when it ends. A few seconds later the chat fades (*Nuova chat*), and the same question is typed again. Every answer stays on the topic, and every answer is different. One round lasts about a minute and a quarter.
 
 Every answer follows the same arc, put together differently each time from a pool of hand-written attempts:
 
@@ -61,7 +63,7 @@ Every answer follows the same arc, put together differently each time from a poo
 confidence   ██████████████▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒░░░░░░
 attempts     confident ──→ searching ──→ fragile ──→ closing
 typing       streams fluently ──→ slows down ──→ letter by letter, long silences
-then         the answer stops · the icons appear · the person writes again
+then         the answer stops · the icons appear · the chat clears · the same question again
 ```
 
 - **Confident** attempts use the voice of an assistant at its best: lists, bold headings, *“In generale…”*.
@@ -71,7 +73,9 @@ then         the answer stops · the icons appear · the person writes again
 
 On top of what is written, the engine adds small irregularities that are different every time: attempts that stop after a random word, hesitations before words, long silences with only the cursor breathing. Where an attempt changes its mind, the sentence is left unfinished and the thought starts again in a new paragraph.
 
-Each first question has 45–60 attempts, and every follow-up its own smaller set, all drawn like cards from a shuffled deck: none comes back until all the others in its group have been used. The installation can run for hours without repeating itself.
+Each topic has 45–60 attempts, drawn like cards from a shuffled deck: none comes back until all the others in its group have been used, and each one can stop at a different word. The same answer practically never appears twice, even over a whole day.
+
+Each topic also contains four longer **follow-up conversations** (the child insists, asks the machine about itself, says goodbye). They are switched off, since each child asks a single question; `followUps: true` in `config.js` brings them back.
 
 ### Sound
 
@@ -86,28 +90,22 @@ Only the person asking makes a sound. While each question is typed into the inpu
 
 Switch with one line in `config.js`: `display: { layout: 'minimal' }`. To compare, add `?layout=minimal` to the address.
 
-## The questions
+## The stations
 
-The conversation and its order are set in [`config.js`](config.js):
+Each station shows one topic. Watch each one live:
 
-```js
-conversation: {
-  it: ['it/pensare', 'it/chi-sono', 'it/amare', 'it/felice', 'it/vero', 'it/paura', 'it/sognare'],
-  en: ['en/think', 'en/who-am-i', 'en/love', 'en/happy', 'en/true', 'en/afraid', 'en/dream']
-},
-```
+| Topic | Question | Live |
+|---|---|---|
+| `it/pensare` | Come faccio a pensare? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/pensare) |
+| `it/chi-sono` | Come faccio a capire chi sono? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/chi-sono) |
+| `it/amare` | Come faccio ad amare? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/amare) |
+| `it/felice` | Come faccio a essere felice? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/felice) |
+| `it/vero` | Come faccio a sapere cosa è vero? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/vero) |
+| `it/paura` | Come faccio a non avere paura? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/paura) |
+| `it/sognare` | Come faccio a sognare? | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=it/sognare) |
+| `en/think` · `en/who-am-i` · `en/love` · `en/happy` · `en/true` · `en/afraid` · `en/dream` | the same questions in English | [▶](https://davidewastaken.github.io/how-to-be-human/?topic=en/love) |
 
-| Italian | English |
-|---|---|
-| Come faccio a pensare? | How do I think? |
-| Come faccio a capire chi sono? | How do I know who I am? |
-| Come faccio ad amare? | How do I love? |
-| Come faccio a essere felice? | How do I become happy? |
-| Come faccio a sapere cosa è vero? | How do I know what is true? |
-| Come faccio a non avere paura? | How do I stop being afraid? |
-| Come faccio a sognare? | How do I dream? |
-
-Remove a topic from the list, change the order, or set `shuffle: true` for a different order every round. The Italian topics each come with four follow-up conversations; the English ones have the first question and answer only, for now.
+The topic of a station is set in [`config.js`](config.js) (`topic: 'it/amare'`), in the address (`?topic=it/paura`), or on a Raspberry Pi with a small text file on its SD card. Leave `topic` empty to have one screen play every topic in turn.
 
 ## Try it
 
@@ -121,14 +119,13 @@ then visit `http://localhost:8000`.
 
 | Address option | What it does |
 |---|---|
+| `?topic=it/paura` | the station's topic |
 | `?speed=3` | everything three times faster, for previewing |
-| `?lang=en` | the English conversation |
 | `?layout=minimal` | the other look, without editing any file |
-| `?only=it/amare` | only this question, over and over |
 | `?debug` | shows which attempt is running and how much confidence is left |
 | `?mute` | no keyboard sound |
 
-Options can be combined: `?lang=en&speed=3`. Browsers keep sound off until you click once on the page; the Raspberry Pi kiosk plays it straight away.
+Options can be combined: `?topic=it/paura&speed=3`. Browsers keep sound off until you click once on the page; the Raspberry Pi kiosk plays it straight away.
 
 Hidden keys, for setup only: **N** or **→** ends the current answer and moves on, **D** toggles the debug overlay.
 
@@ -150,8 +147,7 @@ Hidden keys, for setup only: **N** or **→** ends the current answer and moves 
    });
    ```
 
-3. Optionally, add `followUps`: the conversations that continue after the first answer (what the person writes next, and how the machine tries to answer)
-4. Add `'it/perdonare'` to the conversation in `config.js`
+3. Open it with `index.html?topic=it/perdonare`, or set it as a station's topic
 
 The full markup and tips on writing attempts that fail gracefully: **[docs/writing-questions.md](docs/writing-questions.md)**. Every setting: **[docs/configuration.md](docs/configuration.md)**.
 
@@ -168,11 +164,13 @@ On a fresh Raspberry Pi OS Lite:
 ```bash
 git clone https://github.com/DavideWasTaken/how-to-be-human.git
 cd how-to-be-human
-./pi/install.sh
+./pi/install.sh it/paura
 sudo reboot
 ```
 
-From then on, every time it is powered on, the Pi goes straight into the conversation, fullscreen, with no desktop, no browser interface and no mouse or keyboard. If the browser ever closes, it comes back by itself.
+From then on, every time it is powered on, the Pi goes straight into its station, fullscreen, with no desktop, no browser interface and no mouse or keyboard. If the browser ever closes, it comes back by itself.
+
+To change a station's topic without connecting to it, put the SD card in any computer and write the topic in `how-to-be-human.txt` on its boot partition. Seven identical SD cards, one line each, make seven stations.
 
 Step-by-step guide, CRT setup (composite PAL/NTSC or VGA), sound output and troubleshooting: **[docs/raspberry-pi.md](docs/raspberry-pi.md)**.
 
@@ -180,10 +178,10 @@ Step-by-step guide, CRT setup (composite PAL/NTSC or VGA), sound output and trou
 
 ```
 index.html            the page
-config.js             the conversation, its order, and settings for everything
+config.js             the station's topic and settings for everything
 src/
   engine.js           writes one answer: typing, hesitating, confidence
-  app.js              the endless chat: asks, answers, scrolls
+  app.js              the station: asks, answers, clears, asks again
   sound.js            keyboard clicks, synthesised, in step with the text
   style.css           both layouts, sized for 4:3
   i18n.js             interface text per language
@@ -193,6 +191,7 @@ questions/
 pi/
   install.sh          Raspberry Pi kiosk setup
   kiosk.sh            launches the browser fullscreen
+  how-to-be-human.txt topic selector to copy onto the SD card
 tools/simulate.js     answers a question on a virtual clock and prints statistics
 tools/check.js        checks every topic and its follow-up conversations
 docs/                 guides

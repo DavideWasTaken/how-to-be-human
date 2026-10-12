@@ -56,7 +56,7 @@
       headerTitle: null,    // null = default for the language, '' = hidden
       placeholder: null,
       footnote: null,
-      newChatPerTopic: true, // when a topic's conversation closes, the chat is cleared
+      newChatPerTopic: true, // before the question is asked again, the chat is cleared
       antiBurnIn: true      // shifts the layout by a few pixels for every answer
     },
     sound: {
@@ -251,8 +251,14 @@
         else await this.sleep(range(this.t.betweenAttempts) * (1.5 - 0.5 * c));
       }
 
-      const closing = this.pickAttempt('closing');
-      if (closing) await this.perform(closing, {});
+      // the closing words should not just echo the last word on screen ("Non ¶ Non ¶ Non")
+      const word = (s) => (s.trim().split(/\s+/)[0] || '').replace(/[^\p{L}]/gu, '').toLowerCase();
+      const lastWord = word(this.glyphs.map((g) => g.c).join('').trim().split(/\s+/).pop() || '');
+      let closing = this.pickAttempt('closing');
+      for (let i = 0; closing && i < this.pools.closing.length && word(closing.text) === lastWord; i++) {
+        closing = this.pickAttempt('closing');
+      }
+      if (closing && word(closing.text) !== lastWord) await this.perform(closing, {});
 
       await this.sleep(range(this.t.finalHold));
       if (this.b.backspace) await this.finalErase();

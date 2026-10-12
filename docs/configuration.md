@@ -12,6 +12,8 @@ Write only what you want to change. Values written as `[a, b]` are ranges: a ran
 
 ```js
 window.HTBH_CONFIG = {
+  topic: 'it/amare',
+
   language: 'it',
 
   conversation: {
@@ -20,6 +22,7 @@ window.HTBH_CONFIG = {
   },
 
   shuffle: false,
+  followUps: false,
 
   timing: {},
   behaviour: {},
@@ -30,9 +33,11 @@ window.HTBH_CONFIG = {
 
 | Setting | Meaning |
 |---|---|
-| `language` | Which conversation is played, and the language of the interface text (header, input placeholder, footnote). `?lang=en` in the address overrides it |
-| `conversation` | For each language, the questions in the order they are asked. Each name is a file in `questions/` without `.js`. After the last one, it starts again from the first |
-| `shuffle` | `true`: a new random order every round |
+| `topic` | This station's topic: a file in `questions/` without `.js`. The question is asked, answered, the chat clears, and the same question is asked again, forever. `?topic=it/paura` in the address overrides it; on a Raspberry Pi so does `how-to-be-human.txt` on the SD card. The interface language follows the topic (`it/…`, `en/…`) |
+| `language` | Only when `topic` is empty: which list of `conversation` is played, and the interface language |
+| `conversation` | Only when `topic` is empty: for each language, the topics one screen plays in turn |
+| `shuffle` | With several topics: a new random order every round |
+| `followUps` | `true`: after the first answer the child keeps writing, using the topic's follow-up conversations (four per Italian topic), before the chat clears. Default `false`: one question only |
 
 A question file can override `timing` and `behaviour` for itself:
 
@@ -59,9 +64,9 @@ All values in seconds unless noted.
 | `firstWordDelay` | `[1.2, 2.6]` | The pulsing dot before the first word of an answer |
 | `betweenAttempts` | `[0.5, 1.6]` | Pause between one attempt and the next |
 | `finalHold` | `[2, 4]` | The cursor waits on the last words before the answer ends |
-| `followUpSeconds` | `[20, 32]` | Like `cycleSeconds`, for the answers to the person's follow-up messages. A single message can set its own with `seconds` |
-| `nextFollowUp` | `[2.5, 4.5]` | After an answer, before the person writes again (set in `config.js`) |
-| `nextQuestion` | `[5, 8]` | After a topic's conversation closes, before the next topic begins (set in `config.js`) |
+| `followUpSeconds` | `[20, 32]` | Only with `followUps: true`. Like `cycleSeconds`, for the answers to the person's follow-up messages. A single message can set its own with `seconds` |
+| `nextFollowUp` | `[2.5, 4.5]` | Only with `followUps: true`. After an answer, before the person writes again (set in `config.js`) |
+| `nextQuestion` | `[5, 8]` | After the answer ends, before the chat clears and the question is asked again (set in `config.js`) |
 | `eraseSpeed` | `26` | Only with `backspace: true`. Characters per second when deleting |
 | `lateRegretDelay` | `[1.6, 2.6]` | Only with `backspace: true`. Wait before half of a finished sentence is taken back |
 
@@ -101,7 +106,7 @@ Set in `config.js` only.
 | `headerTitle` | language default | Text of the header. `''` hides it |
 | `placeholder` | language default | Grey text in the empty input box |
 | `footnote` | language default | Text under the input box. Italian default: *L'assistente non può commettere errori. Non fidarti delle persone, ma solo di me.* |
-| `newChatPerTopic` | `true` | When a topic's conversation closes, the chat fades and starts empty for the next topic. `false`: one single chat that keeps scrolling |
+| `newChatPerTopic` | `true` | Before the question is asked again, the chat fades and starts empty. `false`: one single chat that keeps scrolling, the question repeated in it |
 | `antiBurnIn` | `true` | Moves the whole layout by a few pixels for every answer, so static parts do not burn into a CRT |
 
 Other interface languages can be added in `src/i18n.js`.

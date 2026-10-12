@@ -2,14 +2,16 @@
 #
 # How to Be Human — Raspberry Pi installer.
 #
-#   ./pi/install.sh
+#   ./pi/install.sh it/paura        # installs this station with its topic
+#   ./pi/install.sh                 # uses the topic set in config.js
 #
 # Target: Raspberry Pi OS Lite (Bookworm or newer), run as the normal
-# user (not root). After a reboot the Pi starts straight into the conversation:
+# user (not root). After a reboot the Pi starts straight into its station:
 # no desktop, no browser chrome, no mouse or keyboard needed.
 #
 set -euo pipefail
 
+TOPIC="${1:-}"
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 MARK_BEGIN="# >>> how-to-be-human >>>"
 MARK_END="# <<< how-to-be-human <<<"
@@ -18,6 +20,13 @@ say() { printf '\n\033[1m%s\033[0m\n' "$*"; }
 
 if [ "$(id -u)" -eq 0 ]; then
   echo "Run this as your normal user (e.g. pi), not with sudo. It will ask for sudo when needed."
+  exit 1
+fi
+
+if [ -n "$TOPIC" ] && [ ! -f "$APP_DIR/questions/$TOPIC.js" ]; then
+  echo "Topic not found: questions/$TOPIC.js"
+  echo "Available:"
+  (cd "$APP_DIR/questions" && find . -name '*.js' ! -name '_*' | sed 's|^\./||; s|\.js$||' | sort)
   exit 1
 fi
 
@@ -34,6 +43,14 @@ sudo apt-get install -y --no-install-recommends fonts-inter fonts-liberation \
   || echo "Some fonts are not available — falling back to system fonts."
 
 chmod +x "$APP_DIR/pi/kiosk.sh"
+
+# remember this station's topic (other settings in kiosk.conf are kept)
+if [ -n "$TOPIC" ]; then
+  CONF="$APP_DIR/pi/kiosk.conf"
+  touch "$CONF"
+  sed -i '/^TOPIC=/d' "$CONF"
+  printf 'TOPIC=%s\n' "$TOPIC" >> "$CONF"
+fi
 
 say "2/4  Enabling console auto-login"
 sudo raspi-config nonint do_boot_behaviour B2
@@ -68,5 +85,7 @@ for opt in consoleblank=0 quiet loglevel=3 logo.nologo vt.global_cursor_default=
 done
 
 say "Done."
+[ -n "$TOPIC" ] && echo "Topic: $TOPIC"
 echo "Reboot to start:  sudo reboot"
-echo "Questions, order, language and look are set in config.js."
+echo "To change the topic later, put how-to-be-human.txt on the SD card boot partition"
+echo "(see pi/how-to-be-human.txt), or run this script again with another topic."

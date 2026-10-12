@@ -1,6 +1,6 @@
 # Running on a Raspberry Pi
 
-The goal: plug in the Pi, and a few seconds later the conversation is running fullscreen on the monitor. No desktop, no browser interface, no mouse or keyboard, nothing to start by hand.
+The goal: plug in the Pi, and a few seconds later the station is running fullscreen on the monitor. No desktop, no browser interface, no mouse or keyboard, nothing to start by hand.
 
 How it works: the Pi logs in automatically on its first console and launches [cage](https://github.com/cage-kiosk/cage), a minimal kiosk compositor that can show exactly one application fullscreen. That application is Chromium in kiosk mode, opening `index.html` from the SD card. Nothing needs the internet once installed.
 
@@ -43,22 +43,23 @@ cd how-to-be-human
 ### 3. Install
 
 ```bash
-./pi/install.sh
+./pi/install.sh it/paura
 sudo reboot
 ```
 
-The script:
+Replace `it/paura` with this station's topic (the list is in [Choosing the topic](#choosing-the-topic)). The script:
 
 1. installs `cage`, `chromium` and the fonts
-2. turns on automatic login on the console
-3. adds a few lines to `~/.profile` that start the conversation on the first console, and restart it if it ever closes
-4. hides boot messages and disables screen blanking (the original `cmdline.txt` is saved as `cmdline.txt.htbh-backup`)
+2. saves the topic in `pi/kiosk.conf`
+3. turns on automatic login on the console
+4. adds a few lines to `~/.profile` that start the station on the first console, and restart it if it ever closes
+5. hides boot messages and disables screen blanking (the original `cmdline.txt` is saved as `cmdline.txt.htbh-backup`)
 
-After the reboot the conversation starts by itself. This is what happens every time the Pi is powered on:
+After the reboot the station starts by itself. This is what happens every time the Pi is powered on:
 
 ```
 power on → quiet boot → automatic login on tty1 → ~/.profile starts cage
-        → cage opens Chromium in kiosk mode, fullscreen → index.html
+        → cage opens Chromium in kiosk mode, fullscreen → index.html?topic=it/paura
 ```
 
 Chromium runs with no address bar, no tabs, no error dialogs and no "restore pages" prompt, and the mouse pointer is hidden. If Chromium ever closes or crashes, it is started again after two seconds. Sound is allowed to play without anyone touching the page.
@@ -84,17 +85,44 @@ cd ~/how-to-be-human && git pull && sudo reboot
 ./pi/uninstall.sh
 ```
 
-## Changing what it shows
+## Choosing the topic
 
-Everything is in `config.js` in the project folder: which questions are asked and in what order, the language, the look (`chat` or `minimal`), text size, sound volume. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
+Each station shows one topic. Three ways to set it, from the most convenient:
 
-To try something without editing `config.js`, create `pi/kiosk.conf` with address options, for example the English conversation three times faster:
+**From any computer, without connecting to the Pi.** Copy [`pi/how-to-be-human.txt`](../pi/how-to-be-human.txt) to the SD card's boot partition (the small partition that Windows and macOS can open, called `bootfs`) and write the topic on its last line:
 
-```bash
-echo 'QUERY="lang=en&speed=3&debug"' > ~/how-to-be-human/pi/kiosk.conf
+```
+it/paura
 ```
 
-Delete the file to go back to normal.
+This file wins over everything else, so you can prepare identical SD cards and give each station its topic with a text editor.
+
+| Topic | Question |
+|---|---|
+| `it/pensare` | Come faccio a pensare? |
+| `it/chi-sono` | Come faccio a capire chi sono? |
+| `it/amare` | Come faccio ad amare? |
+| `it/felice` | Come faccio a essere felice? |
+| `it/vero` | Come faccio a sapere cosa è vero? |
+| `it/paura` | Come faccio a non avere paura? |
+| `it/sognare` | Come faccio a sognare? |
+| `en/think` `en/who-am-i` `en/love` `en/happy` `en/true` `en/afraid` `en/dream` | the same in English |
+
+**By running the installer again:** `./pi/install.sh it/sognare`
+
+**In `config.js`** (`topic: 'it/amare'`), which is used when neither of the above is set.
+
+## Changing the look and the rest
+
+Everything else is in `config.js` in the project folder: the look (`chat` or `minimal`), text size, timing, sound volume. Edit it on the Pi (`nano ~/how-to-be-human/config.js`) and restart the browser with `pkill -f chromium`, or reboot. See [configuration.md](configuration.md).
+
+To try something without editing `config.js`, add address options to `pi/kiosk.conf`, for example three times faster with the debug overlay:
+
+```bash
+echo 'QUERY="speed=3&debug"' >> ~/how-to-be-human/pi/kiosk.conf
+```
+
+Remove that line to go back to normal.
 
 ## Connecting a CRT
 
@@ -164,20 +192,20 @@ CRTs often cut off the edges of the picture. Instead of the firmware overscan se
 
 **Power cuts.** If the installation is switched on and off at the mains every day, protect the SD card by making it read-only: `sudo raspi-config` → *Performance Options* → *Overlay File System* → enable it, and reboot. To change anything later (`config.js`, updates), disable it again the same way.
 
-**A timer socket** that cuts power at closing time and restores it in the morning is all that is needed: the Pi starts the conversation on its own every time.
+**A timer socket** that cuts power at closing time and restores it in the morning is all that is needed: the Pi starts its station on its own every time.
 
 ## Troubleshooting
 
-**The console with a login prompt appears instead of the conversation.** Automatic login is off. Run `sudo raspi-config nonint do_boot_behaviour B2` and reboot.
+**The console with a login prompt appears instead of the station.** Automatic login is off. Run `sudo raspi-config nonint do_boot_behaviour B2` and reboot.
 
-**Black screen, or the conversation does not start.** Connect a keyboard, press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd> to get a second console, log in, and start it by hand to see the error:
+**Black screen, or the station does not start.** Connect a keyboard, press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F2</kbd> to get a second console, log in, and start it by hand to see the error:
 
 ```bash
 cage -- ~/how-to-be-human/pi/kiosk.sh
 ```
 
-**"No questions found"** in small grey letters. The names in `conversation` in `config.js` do not match files in `questions/`. Names are like `it/amare`: language folder, slash, file name without `.js`.
+**"No questions found"** in small grey letters. The topic (in `how-to-be-human.txt`, `pi/kiosk.conf` or `config.js`) does not match a file in `questions/`. Topics are like `it/amare`: language folder, slash, file name without `.js`.
 
 **Restart without rebooting:** `pkill -f chromium` over SSH. It comes back after two seconds.
 
-**Watch it faster on the Pi:** put `QUERY="speed=3&debug"` in `pi/kiosk.conf` and restart. Delete the file afterwards.
+**Watch it faster on the Pi:** add the line `QUERY="speed=3&debug"` to `pi/kiosk.conf` and restart. Remove it afterwards.

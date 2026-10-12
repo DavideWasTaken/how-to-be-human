@@ -1,6 +1,6 @@
 # Writing a question
 
-Each question in the conversation lives in its own file, with a pool of prepared attempts at answering it. For every answer, the engine picks attempts from the pool, performs them with their written pauses and changes of mind, adds its own small irregularities, and slowly loses confidence until the answer stops.
+Each topic (one station) lives in its own file, with a pool of prepared attempts at answering it. For every answer, the engine picks attempts from the pool, performs them with their written pauses and changes of mind, adds its own small irregularities, and slowly loses confidence until the answer stops.
 
 This guide is about writing those attempts.
 
@@ -13,7 +13,7 @@ This guide is about writing those attempts.
 
 ## The file
 
-Questions live in `questions/`, grouped by language. The name of a question is its path without `.js`: `questions/it/amare.js` is `it/amare`. To be asked, a question must also be listed in the conversation in `config.js`.
+Questions live in `questions/`, grouped by language. The name of a topic is its path without `.js`: `questions/it/amare.js` is `it/amare`. A station shows it when its `topic` is set to that name (see [configuration.md](configuration.md)).
 
 ```js
 HTBH.question({
@@ -42,7 +42,7 @@ Attempts are drawn like cards from a shuffled deck, one deck per tier: an attemp
 
 ## Follow-up conversations
 
-After the first answer, the person keeps going. A topic can have several follow-up conversations in `followUps`; each time the topic comes up, one of them is played (they take turns like a shuffled deck). A conversation is a list of messages from the person, each with the machine's attempts at answering it. The last message usually closes the conversation; then the chat clears and the next topic begins.
+Follow-ups are **switched off by default**: each child asks a single question, again and again. With `followUps: true` in `config.js`, after the first answer the person keeps going instead. A topic can have several follow-up conversations in `followUps`; each time the topic comes up, one of them is played (they take turns like a shuffled deck). A conversation is a list of messages from the person, each with the machine's attempts at answering it. The last message usually closes the conversation; then the chat clears and the next topic begins.
 
 ```js
 HTBH.question({
@@ -193,10 +193,10 @@ Because an attempt can stop after any word, the same text produces many differen
 
 ## Previewing
 
-Ask only your question, with a faster clock and the debug overlay:
+Open your topic with a faster clock and the debug overlay:
 
 ```
-index.html?only=it/perdonare&speed=3&debug
+index.html?topic=it/perdonare&speed=3&debug
 ```
 
 Press **N** to end the answer and get a new one.

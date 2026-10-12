@@ -1,14 +1,15 @@
 /*
- * How to Be Human — the conversation.
+ * How to Be Human — the station.
  *
- * Loads every question listed in config.js, then plays one endless chat:
- * a question is typed into the input box and sent, the assistant answers,
- * the next question follows. When the list ends, it starts again.
+ * Each station is one topic: a child types the question, the assistant
+ * answers (differently every time), the chat clears, and the same question
+ * is asked again. Forever.
  *
- * URL options (for previewing):
- *   ?lang=en            use another conversation from config.js
- *   ?only=it/amare      ask only this question, over and over
+ * The topic is set in config.js, or in the address:
+ *   ?topic=it/amare     this station's question
  *   &speed=3 &debug &layout=minimal &mute
+ *
+ * Without a topic, the page plays every question of `conversation` in turn.
  *
  * Hidden keys, for setup only (the installation needs no keyboard):
  *   N or →   end the current answer now and move on
@@ -22,10 +23,11 @@
   const params = new URLSearchParams(location.search);
 
   const clean = (s) => (s || '').replace(/[^a-z0-9/_-]/gi, '');
-  const language = clean(params.get('lang')) || CONFIG.language || 'it';
-  const only = clean(params.get('only') || params.get('station'));
+  const topic = clean(params.get('topic') || params.get('only') || params.get('station')) || CONFIG.topic || '';
+  const topicLang = topic.split('/')[0];
+  const language = clean(params.get('lang')) || (topic && HTBH.STRINGS[topicLang] ? topicLang : '') || CONFIG.language || 'it';
   const conversation = CONFIG.conversation || {};
-  const ids = only ? [only] : conversation[language] || [];
+  const ids = topic ? [topic] : conversation[language] || [];
   const speed = parseFloat(params.get('speed')) || 1;
 
   const $ = (id) => document.getElementById(id);
@@ -136,8 +138,8 @@
         console.warn('[how-to-be-human] ' + id + ': ' + e.message);
         continue;
       }
-      // follow-ups: shorter answers by default, the topic's own settings still apply
-      followUpPerformers[id] = (def.followUps || []).map((conversation, v) =>
+      // follow-ups (only when switched on): shorter answers, the topic's own settings still apply
+      followUpPerformers[id] = (CONFIG.followUps ? def.followUps || [] : []).map((conversation, v) =>
         conversation.map((turn, k) => {
           const settings = HTBH.merge({}, HTBH.DEFAULTS, base,
             { timing: def.timing, behaviour: def.behaviour },
@@ -160,9 +162,11 @@
   /* ---------- the endless conversation ---------- */
 
   /**
-   * One topic at a time: the first question and its answer, then one of the
-   * topic's follow-up conversations (the person insists, asks again, says
-   * goodbye). When it closes, the chat is cleared and the next topic begins.
+   * The question is asked and answered; then the chat is cleared and the
+   * question is asked again (a station has a single topic, so it is always
+   * the same question, with a different answer each time). With several
+   * topics they take turns. If follow-ups are switched on in config.js,
+   * the person keeps the conversation going before it clears.
    */
   async function converse(list) {
     let first = true;

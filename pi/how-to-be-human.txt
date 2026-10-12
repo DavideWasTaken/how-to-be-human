@@ -1,0 +1,16 @@
+# How to Be Human — this station's topic.
+#
+# Copy this file to the boot partition of the SD card (the small one called
+# "bootfs" that Windows and macOS can open) and write the topic on the first
+# line that does not start with #. Then put the card back and power on.
+#
+#   it/pensare    Come faccio a pensare?
+#   it/chi-sono   Come faccio a capire chi sono?
+#   it/amare      Come faccio ad amare?
+#   it/felice     Come faccio a essere felice?
+#   it/vero       Come faccio a sapere cosa è vero?
+#   it/paura      Come faccio a non avere paura?
+#   it/sognare    Come faccio a sognare?
+#
+#   en/think  en/who-am-i  en/love  en/happy  en/true  en/afraid  en/dream
+it/amare

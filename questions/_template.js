@@ -1,10 +1,10 @@
 /*
- * Question template — copy this file to add a question to the conversation.
+ * Topic template — copy this file to make a new station topic.
  *
  *   1. Copy it, e.g. to questions/it/perdonare.js
  *   2. Change the question and write the attempts
- *   3. Add 'it/perdonare' to the conversation list in config.js
- *   4. Preview it alone: index.html?only=it/perdonare&speed=3&debug
+ *   3. Preview it: index.html?topic=it/perdonare&speed=3&debug
+ *   4. Make it a station's topic (config.js, or how-to-be-human.txt on the Pi)
  *
  * Full guide: docs/writing-questions.md
  * Every option below is optional except `question` and `attempts`.

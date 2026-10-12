@@ -1,22 +1,38 @@
 #!/usr/bin/env bash
 #
 # How to Be Human — kiosk launcher.
-# Started automatically on tty1 (see install.sh). Opens the conversation
+# Started automatically on tty1 (see install.sh). Opens this station's topic
 # fullscreen with no browser interface, inside the `cage` kiosk compositor.
 #
-# What it shows is set in config.js. For a quick test without editing it,
-# create pi/kiosk.conf with e.g.  QUERY="lang=en&speed=3&debug"
+# The topic is chosen, in order of priority, by:
+#   1. how-to-be-human.txt on the SD card boot partition (one line, e.g.
+#      it/paura) — editable from any computer
+#   2. TOPIC in pi/kiosk.conf, written by install.sh
+#   3. `topic` in config.js
+# pi/kiosk.conf can also hold extra address options, e.g. QUERY="speed=3&debug"
 #
 set -u
 
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+TOPIC=""
 QUERY=""
 
 # shellcheck disable=SC1091
 [ -f "$APP_DIR/pi/kiosk.conf" ] && . "$APP_DIR/pi/kiosk.conf"
 
+for f in /boot/firmware/how-to-be-human.txt /boot/how-to-be-human.txt; do
+  if [ -f "$f" ]; then
+    t="$(grep -v '^[[:space:]]*#' "$f" | tr -d ' \r\t' | grep -m 1 . || true)"
+    [ -n "$t" ] && TOPIC="$t"
+    break
+  fi
+done
+
+ARGS="${TOPIC:+topic=$TOPIC}"
+[ -n "$QUERY" ] && ARGS="${ARGS:+$ARGS&}$QUERY"
+
 BROWSER="$(command -v chromium || command -v chromium-browser)"
-URL="file://$APP_DIR/index.html${QUERY:+?$QUERY}"
+URL="file://$APP_DIR/index.html${ARGS:+?$ARGS}"
 PROFILE="$HOME/.cache/how-to-be-human/chromium"
 mkdir -p "$PROFILE"
 
