@@ -107,7 +107,7 @@ Other interface languages can be added in `src/i18n.js`.
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `enabled` | `true` | A soft keyboard click for every character that appears (and, with `backspace: true`, for every character deleted). Synthesised, no audio files |
+| `enabled` | `true` | A soft keyboard click for every letter of the questions as they are typed into the input box. The answers are silent. Synthesised, no audio files |
 | `volume` | `0.35` | From `0` to `1` |
 
 Add `?mute` to the address to silence it while previewing. Desktop browsers start the sound only after a click or a key press on the page; the Raspberry Pi kiosk plays it from the start.

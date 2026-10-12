@@ -58,7 +58,7 @@ Each question has 45–60 attempts, drawn like cards from a shuffled deck: none 
 
 ### Sound
 
-A soft keyboard click goes with the writing, and always matches what is on screen: one press for every character that appears, a deeper one for the space bar, a fuller one for a new line. When text streams in a chunk, the clicks are spread across it like fast typing. The questions typed into the input box click too. The sound is synthesised in the browser (no audio files) and every press varies slightly. Set the volume or switch it off with `sound: { volume, enabled }` in `config.js`.
+Only the person asking makes a sound. While each question is typed into the input box, a soft keyboard click follows it letter by letter: a deeper press for the space bar, a fuller one for sending. The machine's answers appear in silence. The sound is synthesised in the browser (no audio files) and every press varies slightly. Set the volume or switch it off with `sound: { volume, enabled }` in `config.js`.
 
 ## Two looks
 

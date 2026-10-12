@@ -360,13 +360,9 @@
       if (current) current.answer.dataset.cursor = state;
     },
 
-    keys(text, span) {
-      if (sound) sound.typed(text, span);
-    },
-
-    backspace(count, span) {
-      if (sound) sound.erased(count, span);
-    },
+    // The answer is silent: only the person asking types on a keyboard.
+    keys() {},
+    backspace() {},
 
     setGenerating(on) {
       el.send.dataset.state = on ? 'stop' : 'empty';

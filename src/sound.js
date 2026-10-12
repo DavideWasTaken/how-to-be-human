@@ -1,8 +1,8 @@
 /*
  * How to Be Human — keyboard sound.
  *
- * Every character that appears on screen is a key press; every character
- * that disappears is a backspace. Clicks are synthesised (no audio files):
+ * The person asking types each question on a keyboard; the machine answers
+ * in silence. Clicks are synthesised (no audio files):
  * a short filtered noise burst for the plastic tick, plus a soft low tone for
  * the key bottoming out. Space, enter and backspace each sound a little
  * different, and every press varies slightly, like a real keyboard.
